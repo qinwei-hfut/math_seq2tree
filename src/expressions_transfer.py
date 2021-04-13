@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings('ignore')
 from copy import deepcopy
 import re
 

@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings('ignore')
 import torch
 from torch.nn import functional
 

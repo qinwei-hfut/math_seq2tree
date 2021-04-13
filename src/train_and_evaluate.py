@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings('ignore')
 from src.masked_cross_entropy import *
 from src.pre_data import *
 from src.expressions_transfer import *
