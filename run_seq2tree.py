@@ -1,4 +1,6 @@
 # coding: utf-8
+import warnings
+warnings.filterwarnings('ignore')
 from src.train_and_evaluate import *
 from src.models import *
 import time
