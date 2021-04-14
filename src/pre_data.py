@@ -346,14 +346,19 @@ def transfer_num(data):  # transfer num into "NUM"
             if j == "NUM":
                 num_pos.append(i)
         assert len(nums) == len(num_pos)
-        pdb.set_trace()
+        # pdb.set_trace()
         # pairs.append((input_seq, out_seq, nums, num_pos, d["ans"]))
+        # input_seq:分词后的题干，所有的数字被num代替；
+        # out_seq: 分词后的公式，所有的数字被N1，N2代替
+        # nums: 所有num的list，顺序和out_seq中的N1，N2保持一致；
+        # num_pos：nums中所有的num在input_seq中的位置；
         pairs.append((input_seq, out_seq, nums, num_pos))
 
     temp_g = []
     for g in generate_nums:
         if generate_nums_dict[g] >= 5:
             temp_g.append(g)
+    pdb.set_trace()
     return pairs, temp_g, copy_nums
 
 
