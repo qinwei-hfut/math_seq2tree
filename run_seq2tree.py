@@ -39,7 +39,7 @@ fold_pairs.append(pairs[(fold_size * 4):])
 
 best_acc_fold = []
 
-for fold in range(5):
+for fold in range(1):
     pairs_tested = []
     pairs_trained = []
     for fold_t in range(5):
