@@ -6,6 +6,7 @@ from src.models import *
 import time
 import torch.optim
 from src.expressions_transfer import *
+import pdb
 
 batch_size = 64
 embedding_size = 128
@@ -84,6 +85,7 @@ for fold in range(5):
         merge_scheduler.step()
         loss_total = 0
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(train_pairs, batch_size)
+        pdb.set_trace()
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
         start = time.time()
