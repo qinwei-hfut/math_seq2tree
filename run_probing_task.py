@@ -62,17 +62,24 @@ for fold in range(5):
     generate = GenerateNode(hidden_size=hidden_size, op_nums=output_lang.n_words - copy_nums - 1 - len(generate_nums),
                             embedding_size=embedding_size)
     merge = Merge(hidden_size=hidden_size, embedding_size=embedding_size)
+
+    # ----- -----TODO hidden size
+    probing_compare_module = Probing_Compare_Module(embedding_size=hidden_size,hidden_size= 100,linear=True)
     # the embedding layer is  only for generated number embeddings, operators, and paddings
 
-    encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    predict_optimizer = torch.optim.Adam(predict.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    generate_optimizer = torch.optim.Adam(generate.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    merge_optimizer = torch.optim.Adam(merge.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    # encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    # predict_optimizer = torch.optim.Adam(predict.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    # generate_optimizer = torch.optim.Adam(generate.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    # merge_optimizer = torch.optim.Adam(merge.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    probing_compare_optim = torch.optim.SGD(probing_compare_module.parameters(), lr=0.01, momentum=0.5)
 
-    encoder_scheduler = torch.optim.lr_scheduler.StepLR(encoder_optimizer, step_size=20, gamma=0.5)
-    predict_scheduler = torch.optim.lr_scheduler.StepLR(predict_optimizer, step_size=20, gamma=0.5)
-    generate_scheduler = torch.optim.lr_scheduler.StepLR(generate_optimizer, step_size=20, gamma=0.5)
-    merge_scheduler = torch.optim.lr_scheduler.StepLR(merge_optimizer, step_size=20, gamma=0.5)
+
+    # encoder_scheduler = torch.optim.lr_scheduler.StepLR(encoder_optimizer, step_size=20, gamma=0.5)
+    # predict_scheduler = torch.optim.lr_scheduler.StepLR(predict_optimizer, step_size=20, gamma=0.5)
+    # generate_scheduler = torch.optim.lr_scheduler.StepLR(generate_optimizer, step_size=20, gamma=0.5)
+    # merge_scheduler = torch.optim.lr_scheduler.StepLR(merge_optimizer, step_size=20, gamma=0.5)
+    # TODO super parameter ?
+    probing_compare_scheduler = torch.optim.lr_scheduler.StepLR(probing_compare_optim, step_size=20,gamma=0.5)
 
     # Move models to GPU
     if USE_CUDA:
@@ -85,11 +92,17 @@ for fold in range(5):
     for num in generate_nums:
         generate_num_ids.append(output_lang.word2index[num])
 
+
+    encoder.load_state_dict(torch.load('./models/encoder'))
+    predict.load_state_dict(torch.load('./models/predict'))
+    generate.load_state_dict(torch.load('./models/generate'))
+    merge.load_state_dict(torch.load('./models/merge'))
+
     for epoch in range(n_epochs):
-        encoder_scheduler.step()
-        predict_scheduler.step()
-        generate_scheduler.step()
-        merge_scheduler.step()
+        # encoder_scheduler.step()
+        # predict_scheduler.step()
+        # generate_scheduler.step()
+        # merge_scheduler.step()
         loss_total = 0
         # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
         # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
@@ -97,20 +110,27 @@ for fold in range(5):
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
         # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(train_pairs, batch_size)
-        pdb.set_trace()
+        # pdb.set_trace()
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
         start = time.time()
+        '''
         for idx in range(len(input_lengths)):
-            loss = train_tree(
+            # loss = train_tree(
+            #     input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx],
+            #     num_stack_batches[idx], num_size_batches[idx], generate_num_ids, encoder, predict, generate, merge,
+            #     encoder_optimizer, predict_optimizer, generate_optimizer, merge_optimizer, output_lang, num_pos_batches[idx])
+            loss_probing_compare = train_probing_compare(
                 input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx],
                 num_stack_batches[idx], num_size_batches[idx], generate_num_ids, encoder, predict, generate, merge,
                 encoder_optimizer, predict_optimizer, generate_optimizer, merge_optimizer, output_lang, num_pos_batches[idx])
             loss_total += loss
+    
 
         print("loss:", loss_total / len(input_lengths))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
+        '''
         if epoch % 10 == 0 or epoch > n_epochs - 5:
             value_ac = 0
             equation_ac = 0
@@ -129,10 +149,10 @@ for fold in range(5):
             print("test_answer_acc", float(equation_ac) / eval_total, float(value_ac) / eval_total)
             print("testing time", time_since(time.time() - start))
             print("------------------------------------------------------")
-            torch.save(encoder.state_dict(), "models/encoder")
-            torch.save(predict.state_dict(), "models/predict")
-            torch.save(generate.state_dict(), "models/generate")
-            torch.save(merge.state_dict(), "models/merge")
+            # torch.save(encoder.state_dict(), "models/encoder")
+            # torch.save(predict.state_dict(), "models/predict")
+            # torch.save(generate.state_dict(), "models/generate")
+            # torch.save(merge.state_dict(), "models/merge")
             if epoch == n_epochs - 1:
                 best_acc_fold.append((equation_ac, value_ac, eval_total))
 
