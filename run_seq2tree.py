@@ -62,12 +62,18 @@ for fold in range(5):
     generate = GenerateNode(hidden_size=hidden_size, op_nums=output_lang.n_words - copy_nums - 1 - len(generate_nums),
                             embedding_size=embedding_size)
     merge = Merge(hidden_size=hidden_size, embedding_size=embedding_size)
+
+    # ----- -----TODO hidden size
+    # probing_compare_module = Probing_Compare_Module(embedding_size=hidden_size,hidden_size= 100,linear=True)
     # the embedding layer is  only for generated number embeddings, operators, and paddings
 
     encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
     predict_optimizer = torch.optim.Adam(predict.parameters(), lr=learning_rate, weight_decay=weight_decay)
     generate_optimizer = torch.optim.Adam(generate.parameters(), lr=learning_rate, weight_decay=weight_decay)
     merge_optimizer = torch.optim.Adam(merge.parameters(), lr=learning_rate, weight_decay=weight_decay)
+
+    # probing_compare_optim = torch.optim.SGD(probing_compare_module.parameters(), lr=0.01, momentum=0.5)
+
 
     encoder_scheduler = torch.optim.lr_scheduler.StepLR(encoder_optimizer, step_size=20, gamma=0.5)
     predict_scheduler = torch.optim.lr_scheduler.StepLR(predict_optimizer, step_size=20, gamma=0.5)
@@ -106,6 +112,10 @@ for fold in range(5):
                 input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx],
                 num_stack_batches[idx], num_size_batches[idx], generate_num_ids, encoder, predict, generate, merge,
                 encoder_optimizer, predict_optimizer, generate_optimizer, merge_optimizer, output_lang, num_pos_batches[idx])
+            # loss_probing_compare = train_probing_compare(
+            #     input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx],
+            #     num_stack_batches[idx], num_size_batches[idx], generate_num_ids, encoder, predict, generate, merge,
+            #     encoder_optimizer, predict_optimizer, generate_optimizer, merge_optimizer, output_lang, num_pos_batches[idx])
             loss_total += loss
 
         print("loss:", loss_total / len(input_lengths))
