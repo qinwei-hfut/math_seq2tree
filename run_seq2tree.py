@@ -55,6 +55,7 @@ for fold in range(5):
                                                                     copy_nums, tree=True)
     # pdb.set_trace()
     # Initialize models
+    print(input_lang.n_words)
     encoder = EncoderSeq(input_size=input_lang.n_words, embedding_size=embedding_size, hidden_size=hidden_size,
                          n_layers=n_layers)
     predict = Prediction(hidden_size=hidden_size, op_nums=output_lang.n_words - copy_nums - 1 - len(generate_nums),
