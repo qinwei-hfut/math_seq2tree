@@ -4,6 +4,37 @@ import torch
 import torch.nn as nn
 
 
+class Probing_Compare_Module(nn.Module):
+    def __init__(self, embedding_size, hidden_size, linear, cat=True):
+        super(Probing_Compare_Module, self).__init__()
+        self.cat = cat
+        self.embedding_factor = 1
+        if cat:
+            self.embedding_factor = 2
+        self.linear = linear
+        if self.linear:
+            self.decode_layer =  torch.nn.Linear(in_features= embedding_size * self.embedding_factor, out_features=1)
+        else:
+            self.decode_layer = torch.nn.Sequential(torch.nn.Linear(in_features= embedding_size * self.embedding_factor, out_features=hidden_size),
+                                                    torch.nn.ReLU(),
+                                                    torch.nn.Linear(in_features=hidden_size,out_features=hidden_size),
+                                                    torch.nn.ReLU(),
+                                                    torch.nn.Linear(in_features=hidden_size, out_features=1))
+
+    def forward(self, input1, input2):
+        if self.cat:
+            # TODO cat的维度需要确定
+            input_ = torch.cat(input1,input2)
+        else:
+            input_ = input1+input2
+
+        outputs = self.decode_layer(input_)
+        return outputs
+
+
+
+
+
 # EncoderRNN 似乎没有被使用，没有检索到；
 class EncoderRNN(nn.Module):
     def __init__(self, input_size, embedding_size, hidden_size, n_layers=2, dropout=0.5):
