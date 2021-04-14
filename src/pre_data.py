@@ -358,7 +358,7 @@ def transfer_num(data):  # transfer num into "NUM"
     for g in generate_nums:
         if generate_nums_dict[g] >= 5:
             temp_g.append(g)
-    pdb.set_trace()
+    # pdb.set_trace()
     return pairs, temp_g, copy_nums
 
 
