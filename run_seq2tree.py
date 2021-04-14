@@ -45,6 +45,7 @@ for fold in range(5):
         else:
             pairs_trained += fold_pairs[fold_t]
 
+    # pairs_trained 就是分词后的题目和啥？
     input_lang, output_lang, train_pairs, test_pairs = prepare_data(pairs_trained, pairs_tested, 5, generate_nums,
                                                                     copy_nums, tree=True)
     # Initialize models
@@ -84,6 +85,11 @@ for fold in range(5):
         generate_scheduler.step()
         merge_scheduler.step()
         loss_total = 0
+        # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
+        # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
+
+        # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
+        # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(train_pairs, batch_size)
         pdb.set_trace()
         print("fold:", fold + 1)

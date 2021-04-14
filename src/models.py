@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 
 
+# EncoderRNN 似乎没有被使用，没有检索到；
 class EncoderRNN(nn.Module):
     def __init__(self, input_size, embedding_size, hidden_size, n_layers=2, dropout=0.5):
         super(EncoderRNN, self).__init__()
@@ -185,6 +186,7 @@ class EncoderSeq(nn.Module):
 
         problem_output = pade_outputs[-1, :, :self.hidden_size] + pade_outputs[0, :, self.hidden_size:]
         pade_outputs = pade_outputs[:, :, :self.hidden_size] + pade_outputs[:, :, self.hidden_size:]  # S x B x H
+        # pade_outputs 是每个batch中每个句子的每个word的vector，我要probing 的就是这个；
         return pade_outputs, problem_output
 
 

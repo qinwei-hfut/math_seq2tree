@@ -5,7 +5,7 @@ import json
 import copy
 import re
 
-
+import pdb
 PAD_token = 0
 
 
@@ -346,6 +346,7 @@ def transfer_num(data):  # transfer num into "NUM"
             if j == "NUM":
                 num_pos.append(i)
         assert len(nums) == len(num_pos)
+        pdb.set_trace()
         # pairs.append((input_seq, out_seq, nums, num_pos, d["ans"]))
         pairs.append((input_seq, out_seq, nums, num_pos))
 
