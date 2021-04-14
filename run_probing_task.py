@@ -110,10 +110,11 @@ for fold in range(5):
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
         # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(train_pairs, batch_size)
-        # pdb.set_trace()
+        pdb.set_trace()
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
         start = time.time()
+        
         '''
         for idx in range(len(input_lengths)):
             # loss = train_tree(
@@ -125,13 +126,14 @@ for fold in range(5):
                 num_stack_batches[idx], num_size_batches[idx], generate_num_ids, encoder, predict, generate, merge,
                 encoder_optimizer, predict_optimizer, generate_optimizer, merge_optimizer, output_lang, num_pos_batches[idx])
             loss_total += loss
+        '''
     
 
         print("loss:", loss_total / len(input_lengths))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
         '''
-        if epoch % 10 == 0 or epoch > n_epochs - 5:
+        if epoch == 0:
             value_ac = 0
             equation_ac = 0
             eval_total = 0
@@ -153,8 +155,8 @@ for fold in range(5):
             # torch.save(predict.state_dict(), "models/predict")
             # torch.save(generate.state_dict(), "models/generate")
             # torch.save(merge.state_dict(), "models/merge")
-            if epoch == n_epochs - 1:
-                best_acc_fold.append((equation_ac, value_ac, eval_total))
+            # if epoch == n_epochs - 1:
+            #     best_acc_fold.append((equation_ac, value_ac, eval_total))
 
 a, b, c = 0, 0, 0
 for bl in range(len(best_acc_fold)):
