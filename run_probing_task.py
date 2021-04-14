@@ -132,7 +132,7 @@ for fold in range(5):
         print("loss:", loss_total / len(input_lengths))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
-        '''
+        
         if epoch == 0:
             value_ac = 0
             equation_ac = 0
