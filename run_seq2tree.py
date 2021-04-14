@@ -48,10 +48,12 @@ for fold in range(5):
         else:
             pairs_trained += fold_pairs[fold_t]
 
-    # pairs_trained 就是分词后的题目和啥？
+    # pairs_trained he pairs_tested 就是通过fold选择后的pairs
+    # train_pairs 将题干的文字 数字化了；增加了input_len和output_len
+
     input_lang, output_lang, train_pairs, test_pairs = prepare_data(pairs_trained, pairs_tested, 5, generate_nums,
                                                                     copy_nums, tree=True)
-    pdb.set_trace()
+    # pdb.set_trace()
     # Initialize models
     encoder = EncoderSeq(input_size=input_lang.n_words, embedding_size=embedding_size, hidden_size=hidden_size,
                          n_layers=n_layers)

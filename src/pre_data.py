@@ -819,12 +819,15 @@ def prepare_train_batch(pairs_to_batch, batch_size):
     num_stack_batches = []  # save the num stack which
     num_pos_batches = []
     num_size_batches = []
+
+    # 将所有的pairs按照batch size拆分成batch
     while pos + batch_size < len(pairs):
         batches.append(pairs[pos:pos+batch_size])
         pos += batch_size
     batches.append(pairs[pos:])
 
     for batch in batches:
+        # 每个batch内部，根据input length排序
         batch = sorted(batch, key=lambda tp: tp[1], reverse=True)
         input_length = []
         output_length = []
@@ -842,7 +845,8 @@ def prepare_train_batch(pairs_to_batch, batch_size):
         num_pos_batch = []
         num_size_batch = []
         for i, li, j, lj, num, num_pos, num_stack in batch:
-            num_batch.append(len(num))
+            # num_batch.append(len(num))
+            num_batch.append(num)
             input_batch.append(pad_seq(i, li, input_len_max))
             output_batch.append(pad_seq(j, lj, output_len_max))
             num_stack_batch.append(num_stack)
