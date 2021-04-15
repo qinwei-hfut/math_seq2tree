@@ -794,13 +794,10 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     # 处理数据，组成每个batch的适合probing的数据：从num_pos的长度中抽取2个位置，然后抽取出对应的num和pos；
     # 这个num代表着比较的target，pos代表着可以从contextual representation中抽取num的表征；
-    pair_pos_batch = []
-    for i in range(len(input_batch)):
-        if len(num_pos[i]) == 1:
-            pair_pos_batch.append([0,0])
-        else:
-            pair_pos = random.sample(range(0,len(num_pos[i])),2)
-            pair_pos_batch.append(pair_pos)
+    
+        
+
+    
 
 
 
@@ -831,7 +828,28 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
     # merge_optimizer.zero_grad()
     # Run words through encoder
 
-    encoder_outputs, problem_output = encoder(input_var, input_length)
+    encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
+    # pdb.set_trace()
+
+    cpair_pos_batch = []
+    cpair_num_batch = []                  # 这是一个batch的数据，每一个是一个数学题中，抽出的那两个数字
+    cpair_input_feature_batch = []        # 这是一个batch的数据，每一个是一个数学题中，抽出的那两个数字的特征
+    for i in range(len(input_batch)):
+        if len(num_pos[i]) == 1:
+            pair_pos = [0,0]
+        else:
+            pair_pos = random.sample(range(0,len(num_pos[i])),2)
+
+        cpair_pos_batch.append(pair_pos)
+
+        cpair_num_batch_temp = []
+        cpair_input_feature_batch_temp = []
+        for j in range(2):
+            cpair_num_batch_temp.append(nums_batch[i][pair_pos[j]])
+            cpair_input_feature_batch_temp.append(encoder_outputs[num_pos[i][pair_pos[j]],i,:])
+        cpair_num_batch.append(cpair_num_batch_temp)
+        cpair_input_feature_batch.append(cpair_input_feature_batch_temp)
+
     pdb.set_trace()
     # 现在，我们需要从每个句子中，抽出两个num，然后根据对应vector(encoder_outputs中来的)，去预测二者大小关系；
     # 同时，我们也需要计算出，二者本来的关系；这样的话，我们可能需要在前面处理数据；然后按照batch传入？
