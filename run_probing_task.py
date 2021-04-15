@@ -27,7 +27,7 @@ for p in pairs:
     temp_pairs.append((p[0], from_infix_to_prefix(p[1]), p[2], p[3]))
 pairs = temp_pairs
 
-# pdb.set_trace()
+pdb.set_trace()
 
 fold_size = int(len(pairs) * 0.2)
 fold_pairs = []
