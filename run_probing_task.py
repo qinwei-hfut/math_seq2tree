@@ -117,7 +117,7 @@ for fold in range(5):
         print("epoch:", epoch + 1)
         start = time.time()
         
-        
+        '''
         for idx in range(len(input_lengths)):
             # loss = train_tree(
             #     input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx],
@@ -126,7 +126,7 @@ for fold in range(5):
             loss_probing_compare = train_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
             loss_total += loss_probing_compare
         
-    
+        '''
 
         print("loss:", loss_total / len(input_lengths))
         print("training time", time_since(time.time() - start))
