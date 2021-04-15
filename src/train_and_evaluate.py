@@ -769,9 +769,11 @@ def train_tree(input_batch, input_length, target_batch, target_length, nums_stac
     return loss.item()  # , loss_0.item(), loss_1.item()
 
 
-def train_probing_compare(input_batch, input_length, target_batch, target_length, nums_stack_batch, num_size_batch, generate_nums,
-               encoder, predict, generate, merge, encoder_optimizer, predict_optimizer, generate_optimizer,
-               merge_optimizer, output_lang, num_pos, english=False):
+# def train_probing_compare(input_batch, input_length, target_batch, target_length, nums_stack_batch, num_size_batch, generate_nums,
+#                encoder, predict, generate, merge, encoder_optimizer, predict_optimizer, generate_optimizer,
+#                merge_optimizer, output_lang, num_pos, english=False):
+def train_probing_compare(input_batch, input_length, encoder, probing_compare_module, probing_compare_optim,
+               nums_batch, num_pos):
     # sequence mask for attention
     # seq_mask = []
     # max_len = max(input_length)
@@ -786,7 +788,7 @@ def train_probing_compare(input_batch, input_length, target_batch, target_length
     #     num_mask.append([0] * d + [1] * (max_num_size - d))
     # num_mask = torch.ByteTensor(num_mask)
 
-    unk = output_lang.word2index["UNK"]
+    # unk = output_lang.word2index["UNK"]
 
     # Turn padded arrays into (batch_size x max_len) tensors, transpose into (max_len x batch_size)
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
@@ -797,6 +799,7 @@ def train_probing_compare(input_batch, input_length, target_batch, target_length
     # batch_size = len(input_length)
 
     encoder.train()
+    probing_compare_module.train()
     # predict.train()
     # generate.train()
     # merge.train()
@@ -808,13 +811,17 @@ def train_probing_compare(input_batch, input_length, target_batch, target_length
         # num_mask = num_mask.cuda()
 
     # Zero gradients of both optimizers
-    encoder_optimizer.zero_grad()
+    # encoder_optimizer.zero_grad()
     # predict_optimizer.zero_grad()
     # generate_optimizer.zero_grad()
     # merge_optimizer.zero_grad()
     # Run words through encoder
 
     encoder_outputs, problem_output = encoder(input_var, input_length)
+    pdb.set_trace()
+    # 现在，我们需要从每个句子中，抽出两个num，然后根据对应vector(encoder_outputs中来的)，去预测二者大小关系；
+    # 同时，我们也需要计算出，二者本来的关系；这样的话，我们可能需要在前面处理数据；然后按照batch传入？
+
 
     '''
     # Prepare input and output variables

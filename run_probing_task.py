@@ -53,7 +53,7 @@ for fold in range(5):
 
     input_lang, output_lang, train_pairs, test_pairs = prepare_data(pairs_trained, pairs_tested, 5, generate_nums,
                                                                     copy_nums, tree=True)
-    pdb.set_trace()
+    # pdb.set_trace()
     # Initialize models
     encoder = EncoderSeq(input_size=input_lang.n_words, embedding_size=embedding_size, hidden_size=hidden_size,
                          n_layers=n_layers)
@@ -115,18 +115,15 @@ for fold in range(5):
         print("epoch:", epoch + 1)
         start = time.time()
         
-        '''
+        
         for idx in range(len(input_lengths)):
             # loss = train_tree(
             #     input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx],
             #     num_stack_batches[idx], num_size_batches[idx], generate_num_ids, encoder, predict, generate, merge,
             #     encoder_optimizer, predict_optimizer, generate_optimizer, merge_optimizer, output_lang, num_pos_batches[idx])
-            loss_probing_compare = train_probing_compare(
-                input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx],
-                num_stack_batches[idx], num_size_batches[idx], generate_num_ids, encoder, predict, generate, merge,
-                encoder_optimizer, predict_optimizer, generate_optimizer, merge_optimizer, output_lang, num_pos_batches[idx])
-            loss_total += loss
-        '''
+            loss_probing_compare = train_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
+            loss_total += loss_probing_compare
+        
     
 
         print("loss:", loss_total / len(input_lengths))
