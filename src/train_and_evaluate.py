@@ -859,7 +859,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
             cpair_num_batch[i][j] = cpair_num_batch[i][j].replace(')','').replace('(','')
             if cpair_num_batch[i][j].find('/') != -1:
                 cpair_num_batch[i][j] = float(Fraction(cpair_num_batch[i][j]))
-            if cpair_num_batch[i][j].find('%') != -1:
+            elif cpair_num_batch[i][j].find('%') != -1:
                 cpair_num_batch[i][j] = cpair_num_batch[i][j].replace('%','')
                 cpair_num_batch[i][j] = float(cpair_num_batch[i][j])/100.
             else:
