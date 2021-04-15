@@ -833,7 +833,8 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     cpair_pos_batch = []
     cpair_num_batch = []                  # 这是一个batch的数据，每一个是一个数学题中，抽出的那两个数字
-    cpair_input_feature_batch = []        # 这是一个batch的数据，每一个是一个数学题中，抽出的那两个数字的特征
+    cpair_input_feature_batch_left = []        # 这是一个batch的数据，每一个是一个数学题中，抽出的那两个数字的特征
+    cpair_input_feature_batch_right = [] 
     for i in range(len(input_batch)):
         if len(num_pos[i]) == 1:
             pair_pos = [0,0]
@@ -843,13 +844,16 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
         cpair_pos_batch.append(pair_pos)
 
         cpair_num_batch_temp = []
-        cpair_input_feature_batch_temp = []
         for j in range(2):
             cpair_num_batch_temp.append(nums_batch[i][pair_pos[j]])
-            cpair_input_feature_batch_temp.append(encoder_outputs[num_pos[i][pair_pos[j]],i,:])
+            if j == 0:
+                cpair_input_feature_batch_left.append(encoder_outputs[num_pos[i][pair_pos[j]],i,:])
+            else:
+                cpair_input_feature_batch_right.append(encoder_outputs[num_pos[i][pair_pos[j]],i,:])
         cpair_num_batch.append(cpair_num_batch_temp)
-        cpair_input_feature_batch.append(cpair_input_feature_batch_temp)
 
+
+    # for 
     pdb.set_trace()
     # 现在，我们需要从每个句子中，抽出两个num，然后根据对应vector(encoder_outputs中来的)，去预测二者大小关系；
     # 同时，我们也需要计算出，二者本来的关系；这样的话，我们可能需要在前面处理数据；然后按照batch传入？
