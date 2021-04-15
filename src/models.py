@@ -2,7 +2,7 @@ import warnings
 warnings.filterwarnings('ignore')
 import torch
 import torch.nn as nn
-
+import pdb
 
 class Probing_Compare_Module(nn.Module):
     def __init__(self, embedding_size, hidden_size, linear, cat=True):
@@ -52,6 +52,7 @@ class EncoderRNN(nn.Module):
 
     def forward(self, input_seqs, input_lengths, hidden=None):
         # Note: we run this all at once (over multiple batches of multiple sequences)
+        pdb.set_trace()
         embedded = self.embedding(input_seqs)  # S x B x E
         embedded = self.em_dropout(embedded)
         packed = torch.nn.utils.rnn.pack_padded_sequence(embedded, input_lengths)
