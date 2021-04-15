@@ -27,7 +27,7 @@ for p in pairs:
     temp_pairs.append((p[0], from_infix_to_prefix(p[1]), p[2], p[3]))
 pairs = temp_pairs
 
-pdb.set_trace()
+# pdb.set_trace()
 
 fold_size = int(len(pairs) * 0.2)
 fold_pairs = []
@@ -55,7 +55,7 @@ for fold in range(5):
 
     input_lang, output_lang, train_pairs, test_pairs = prepare_data(pairs_trained, pairs_tested, 5, generate_nums,
                                                                     copy_nums, tree=True)
-    # pdb.set_trace()
+    pdb.set_trace()
     # Initialize models
     encoder = EncoderSeq(input_size=input_lang.n_words, embedding_size=embedding_size, hidden_size=hidden_size,
                          n_layers=n_layers)
