@@ -796,8 +796,11 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
     # 这个num代表着比较的target，pos代表着可以从contextual representation中抽取num的表征；
     pair_pos_batch = []
     for i in range(len(input_batch)):
-        pair_pos = random.sample(range(0,len(num_pos[i])),2)
-        pair_pos_batch.append(pair_pos)
+        if len(num_pos[i]) == 1:
+            pair_pos_batch.append([0,0])
+        else:
+            pair_pos = random.sample(range(0,len(num_pos[i])),2)
+            pair_pos_batch.append(pair_pos)
 
 
 
