@@ -635,6 +635,11 @@ def indexes_from_sentence(lang, sentence, tree=False):
 
 
 def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, copy_nums, tree=False):
+    
+    # 题干数字化；
+    # 公式数字化；
+    # 提供length
+    
     input_lang = Lang()
     output_lang = Lang()
     train_pairs = []

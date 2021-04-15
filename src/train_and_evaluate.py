@@ -9,6 +9,7 @@ import torch
 import torch.optim
 import torch.nn.functional as f
 import time
+import random
 
 MAX_OUTPUT_LENGTH = 45
 MAX_INPUT_LENGTH = 120
@@ -790,6 +791,15 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
     # num_mask = torch.ByteTensor(num_mask)
 
     # unk = output_lang.word2index["UNK"]
+
+    # 处理数据，组成每个batch的适合probing的数据：从num_pos的长度中抽取2个位置，然后抽取出对应的num和pos；
+    # 这个num代表着比较的target，pos代表着可以从contextual representation中抽取num的表征；
+    pair_pos_batch = []
+    for i in range(len(input_batch)):
+        pair_pos = random.sample(range(0,len(num_pos[i])),2)
+        pair_pos_batch.append(pair_pos)
+
+
 
     # Turn padded arrays into (batch_size x max_len) tensors, transpose into (max_len x batch_size)
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
