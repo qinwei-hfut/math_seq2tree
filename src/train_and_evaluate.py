@@ -854,6 +854,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
         cpair_num_batch.append(cpair_num_batch_temp)
 
 
+    print(cpair_num_batch)
     for i in range(len(cpair_num_batch)):
         for j in range(2):
             cpair_num_batch[i][j] = cpair_num_batch[i][j].replace(')','').replace('(','')
