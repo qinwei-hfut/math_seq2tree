@@ -796,16 +796,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     if USE_CUDA:
         input_var = input_var.cuda()
-        # seq_mask = seq_mask.cuda()
-        # padding_hidden = padding_hidden.cuda()
-        # num_mask = num_mask.cuda()
 
-    # Zero gradients of both optimizers
-    # encoder_optimizer.zero_grad()
-    # predict_optimizer.zero_grad()
-    # generate_optimizer.zero_grad()
-    # merge_optimizer.zero_grad()
-    # Run words through encoder
 
     encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
     # pdb.set_trace()
@@ -856,6 +847,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     outputs=probing_compare_module(left_contextual_vector,right_contextual_vector)
 
+    pdb.set_trace()
     correct_sum = ((torch.nn.functional.sigmoid(outputs) > 0.5) == probing_comp_target_batch_tensor).sum()
 
     criterion = torch.nn.BCEWithLogitsLoss()
