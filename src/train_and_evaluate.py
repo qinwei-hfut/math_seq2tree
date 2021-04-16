@@ -875,7 +875,10 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     left_contextual_vector = torch.stack(cpair_input_feature_batch_left)
     right_contextual_vector = torch.stack(cpair_input_feature_batch_right)
+
     outputs=probing_compare_module(left_contextual_vector,right_contextual_vector)
+
+    correct_sum = ((torch.nn.functional.sigmoid(outputs) > 0.5) == probing_comp_target_batch_tensor).sum()
 
     criterion = torch.nn.BCEWithLogitsLoss()
     loss = criterion(outputs,probing_comp_target_batch_tensor)
@@ -967,7 +970,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
     generate_optimizer.step()
     merge_optimizer.step()
     '''
-    return loss.item()  # , loss_0.item(), loss_1.item()
+    return loss.item(), correct_sum  # , loss_0.item(), loss_1.item()
 
 
 def evaluate_tree(input_batch, input_length, generate_nums, encoder, predict, generate, merge, output_lang, num_pos,

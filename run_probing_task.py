@@ -101,6 +101,28 @@ for fold in range(5):
     generate.load_state_dict(torch.load('./models/generate'))
     merge.load_state_dict(torch.load('./models/merge'))
 
+
+    print('test mwp model:')
+    value_ac = 0
+    equation_ac = 0
+    eval_total = 0
+    start = time.time()
+    for test_batch in test_pairs:
+        test_res = evaluate_tree(test_batch[0], test_batch[1], generate_num_ids, encoder, predict, generate,
+                                    merge, output_lang, test_batch[5], beam_size=beam_size)
+        pdb.set_trace()
+        val_ac, equ_ac, _, _ = compute_prefix_tree_result(test_res, test_batch[2], output_lang, test_batch[4], test_batch[6])
+        if val_ac:
+            value_ac += 1
+        if equ_ac:
+            equation_ac += 1
+        eval_total += 1
+    print(equation_ac, value_ac, eval_total)
+    print("test_answer_acc", float(equation_ac) / eval_total, float(value_ac) / eval_total)
+    print("testing time", time_since(time.time() - start))
+    print("------------------------------------------------------")
+
+
     for epoch in range(n_epochs):
         # encoder_scheduler.step()
         # predict_scheduler.step()
@@ -109,55 +131,58 @@ for fold in range(5):
         loss_total = 0
         # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
         # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
-
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
         # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(train_pairs, batch_size)
-        pdb.set_trace()
+        # pdb.set_trace()
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
         start = time.time()
         
-        
+        correct_total = 0
         for idx in range(len(input_lengths)):
-            loss_probing_compare = train_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
+            loss_probing_compare, correct_sum = train_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
             loss_total += loss_probing_compare
+            correct_total += correct_sum
         
         
 
-        print("loss:", loss_total / len(input_lengths))
+        print("training loss:", loss_total / len(input_lengths))
+        print("training acc:", correct_sum / len(train_pairs))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
         
-        if epoch == 0:
-            print('test mwp model:')
-            value_ac = 0
-            equation_ac = 0
-            eval_total = 0
-            start = time.time()
-            for test_batch in test_pairs:
-                test_res = evaluate_tree(test_batch[0], test_batch[1], generate_num_ids, encoder, predict, generate,
-                                         merge, output_lang, test_batch[5], beam_size=beam_size)
-                pdb.set_trace()
-                val_ac, equ_ac, _, _ = compute_prefix_tree_result(test_res, test_batch[2], output_lang, test_batch[4], test_batch[6])
-                if val_ac:
-                    value_ac += 1
-                if equ_ac:
-                    equation_ac += 1
-                eval_total += 1
-            print(equation_ac, value_ac, eval_total)
-            print("test_answer_acc", float(equation_ac) / eval_total, float(value_ac) / eval_total)
-            print("testing time", time_since(time.time() - start))
-            print("------------------------------------------------------")
+        
             # torch.save(encoder.state_dict(), "models/encoder")
             # torch.save(predict.state_dict(), "models/predict")
             # torch.save(generate.state_dict(), "models/generate")
             # torch.save(merge.state_dict(), "models/merge")
             # if epoch == n_epochs - 1:
             #     best_acc_fold.append((equation_ac, value_ac, eval_total))
-        
+        '''
         # ######### evaluate probing compare task
         print('evaluate probing compare task:')
+        loss_total_test = 0
+        # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
+        # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
+        # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
+        # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
+        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
+        pdb.set_trace()
+        start = time.time()
+        
+        
+        for idx in range(len(input_lengths)):
+            loss_probing_compare = test_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
+            loss_total += loss_probing_compare
+        
+        
+
+        print("test loss:", loss_total / len(input_lengths))
+        print("test acc:", )
+        print("training time", time_since(time.time() - start))
+        print("--------------------------------")
+        '''
 
 
         
