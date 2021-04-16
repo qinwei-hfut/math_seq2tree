@@ -870,7 +870,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
     probing_comp_target_batch = []
     for i in range(len(cpair_num_batch)):
         probing_comp_target_batch.append(1. if cpair_num_batch[i][0] > cpair_num_batch[i][1] else 0.)
-    probing_comp_target_batch_tensor = torch.tensor(probing_comp_target_batch).unsqueeze(dim=1)
+    probing_comp_target_batch_tensor = torch.tensor(probing_comp_target_batch).unsqueeze(dim=1).cuda()
 
 
     left_contextual_vector = torch.stack(cpair_input_feature_batch_left)
