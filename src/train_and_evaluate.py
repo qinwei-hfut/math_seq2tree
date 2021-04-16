@@ -861,6 +861,94 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
     return loss.item(), correct_sum  # , loss_0.item(), loss_1.item()
 
 
+def test_probing_compare(input_batch, input_length, encoder, probing_compare_module, probing_compare_optim,
+               nums_batch, num_pos):
+
+
+    # 处理数据，组成每个batch的适合probing的数据：从num_pos的长度中抽取2个位置，然后抽取出对应的num和pos；
+    # 这个num代表着比较的target，pos代表着可以从contextual representation中抽取num的表征；
+
+    # Turn padded arrays into (batch_size x max_len) tensors, transpose into (max_len x batch_size)
+    input_var = torch.LongTensor(input_batch).transpose(0, 1)
+
+    # target = torch.LongTensor(target_batch).transpose(0, 1)
+
+    # padding_hidden = torch.FloatTensor([0.0 for _ in range(predict.hidden_size)]).unsqueeze(0)
+    # batch_size = len(input_length)
+
+    encoder.val()
+    probing_compare_module.val()
+    # predict.train()
+    # generate.train()
+    # merge.train()
+
+    if USE_CUDA:
+        input_var = input_var.cuda()
+
+
+    encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
+    # pdb.set_trace()
+    encoder_outputs = encoder_outputs.detach()
+
+    cpair_pos_batch = []
+    cpair_num_batch = []                  # 这是一个batch的数据，每一个是一个数学题中，抽出的那两个数字
+    cpair_input_feature_batch_left = []        # 这是一个batch的数据，每一个是一个数学题中，抽出的那两个数字的特征
+    cpair_input_feature_batch_right = [] 
+    for i in range(len(input_batch)):
+        if len(num_pos[i]) == 1:
+            pair_pos = [0,0]
+        else:
+            pair_pos = random.sample(range(0,len(num_pos[i])),2)
+
+        cpair_pos_batch.append(pair_pos)
+
+        cpair_num_batch_temp = []
+        for j in range(2):
+            cpair_num_batch_temp.append(nums_batch[i][pair_pos[j]])
+            if j == 0:
+                cpair_input_feature_batch_left.append(encoder_outputs[num_pos[i][pair_pos[j]],i,:])
+            else:
+                cpair_input_feature_batch_right.append(encoder_outputs[num_pos[i][pair_pos[j]],i,:])
+        cpair_num_batch.append(cpair_num_batch_temp)
+
+
+    # print(cpair_num_batch)
+    for i in range(len(cpair_num_batch)):
+        for j in range(2):
+            cpair_num_batch[i][j] = cpair_num_batch[i][j].replace(')','').replace('(','')
+            if cpair_num_batch[i][j].find('/') != -1:
+                cpair_num_batch[i][j] = float(Fraction(cpair_num_batch[i][j]))
+            elif cpair_num_batch[i][j].find('%') != -1:
+                cpair_num_batch[i][j] = cpair_num_batch[i][j].replace('%','')
+                cpair_num_batch[i][j] = float(cpair_num_batch[i][j])/100.
+            else:
+                cpair_num_batch[i][j] = float(cpair_num_batch[i][j])
+    
+    probing_comp_target_batch = []
+    for i in range(len(cpair_num_batch)):
+        probing_comp_target_batch.append(1. if cpair_num_batch[i][0] > cpair_num_batch[i][1] else 0.)
+    probing_comp_target_batch_tensor = torch.tensor(probing_comp_target_batch).unsqueeze(dim=1).cuda()
+
+
+    left_contextual_vector = torch.stack(cpair_input_feature_batch_left)
+    right_contextual_vector = torch.stack(cpair_input_feature_batch_right)
+
+    outputs=probing_compare_module(left_contextual_vector,right_contextual_vector)
+
+    # pdb.set_trace()
+    correct_sum = ((torch.nn.functional.sigmoid(outputs) > 0.5) == probing_comp_target_batch_tensor).sum()
+
+    criterion = torch.nn.BCEWithLogitsLoss()
+    loss = criterion(outputs,probing_comp_target_batch_tensor)
+    # pdb.set_trace()
+    # probing_compare_optim.zero_grad()
+    # loss.backward()
+    # probing_compare_optim.step()
+    # 现在，我们需要从每个句子中，抽出两个num，然后根据对应vector(encoder_outputs中来的)，去预测二者大小关系；
+    # 同时，我们也需要计算出，二者本来的关系；这样的话，我们可能需要在前面处理数据；然后按照batch传入？
+    return loss.item(), correct_sum  # , loss_0.item(), loss_1.item()
+
+
 def evaluate_tree(input_batch, input_length, generate_nums, encoder, predict, generate, merge, output_lang, num_pos,
                   beam_size=5, english=False, max_length=MAX_OUTPUT_LENGTH):
 

@@ -162,7 +162,7 @@ for fold in range(5):
             # torch.save(merge.state_dict(), "models/merge")
             # if epoch == n_epochs - 1:
             #     best_acc_fold.append((equation_ac, value_ac, eval_total))
-        '''
+        
         # ######### evaluate probing compare task
         print('evaluate probing compare task:')
         loss_total_test = 0
@@ -174,18 +174,19 @@ for fold in range(5):
         pdb.set_trace()
         start = time.time()
         
-        
+        correct_total_test = 0
         for idx in range(len(input_lengths)):
-            loss_probing_compare = test_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
+            loss_probing_compare, correct_sum_test = test_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
             loss_total += loss_probing_compare
+            correct_total_test += correct_sum_test
         
         
 
         print("test loss:", loss_total / len(input_lengths))
-        print("test acc:", )
+        print("test acc:", float(correct_total_test)/len(test_pairs))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
-        '''
+        
 
 
         
