@@ -24,7 +24,7 @@ class Probing_Compare_Module(nn.Module):
     def forward(self, input1, input2):
         if self.cat:
             # TODO cat的维度需要确定
-            input_ = torch.cat(input1,input2)
+            input_ = torch.cat((input1,input2),dim=1)
         else:
             input_ = input1+input2
 

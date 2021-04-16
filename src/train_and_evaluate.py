@@ -854,7 +854,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
         cpair_num_batch.append(cpair_num_batch_temp)
 
 
-    print(cpair_num_batch)
+    # print(cpair_num_batch)
     for i in range(len(cpair_num_batch)):
         for j in range(2):
             cpair_num_batch[i][j] = cpair_num_batch[i][j].replace(')','').replace('(','')
@@ -874,6 +874,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     left_contextual_vector = torch.stack(cpair_input_feature_batch_left)
     right_contextual_vector = torch.stack(cpair_input_feature_batch_right)
+    outputs=probing_compare_module(left_contextual_vector,right_contextual_vector)
     pdb.set_trace()
     # 现在，我们需要从每个句子中，抽出两个num，然后根据对应vector(encoder_outputs中来的)，去预测二者大小关系；
     # 同时，我们也需要计算出，二者本来的关系；这样的话，我们可能需要在前面处理数据；然后按照batch传入？

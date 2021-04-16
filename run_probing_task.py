@@ -66,7 +66,7 @@ for fold in range(5):
     merge = Merge(hidden_size=hidden_size, embedding_size=embedding_size)
 
     # ----- -----TODO hidden size
-    probing_compare_module = Probing_Compare_Module(embedding_size=hidden_size,hidden_size= 100,linear=True)
+    probing_compare_module = Probing_Compare_Module(embedding_size=hidden_size,hidden_size= 200,linear=False,cat=True)
     # the embedding layer is  only for generated number embeddings, operators, and paddings
 
     # encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
