@@ -876,8 +876,8 @@ def test_probing_compare(input_batch, input_length, encoder, probing_compare_mod
     # padding_hidden = torch.FloatTensor([0.0 for _ in range(predict.hidden_size)]).unsqueeze(0)
     # batch_size = len(input_length)
 
-    encoder.val()
-    probing_compare_module.val()
+    encoder.eval()
+    probing_compare_module.eval()
     # predict.train()
     # generate.train()
     # merge.train()

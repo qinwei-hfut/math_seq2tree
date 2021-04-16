@@ -171,7 +171,7 @@ for fold in range(5):
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
         # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
-        pdb.set_trace()
+        # pdb.set_trace()
         start = time.time()
         
         correct_total_test = 0
