@@ -847,7 +847,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     outputs=probing_compare_module(left_contextual_vector,right_contextual_vector)
 
-    pdb.set_trace()
+    # pdb.set_trace()
     correct_sum = ((torch.nn.functional.sigmoid(outputs) > 0.5) == probing_comp_target_batch_tensor).sum()
 
     criterion = torch.nn.BCEWithLogitsLoss()

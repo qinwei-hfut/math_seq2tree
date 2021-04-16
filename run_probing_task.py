@@ -151,7 +151,7 @@ for fold in range(5):
         
 
         print("training loss:", loss_total / len(input_lengths))
-        print("training acc:", float(correct_sum) / len(train_pairs))
+        print("training acc:", float(correct_total) / len(train_pairs))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
         
