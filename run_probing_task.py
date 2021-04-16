@@ -102,6 +102,7 @@ for fold in range(5):
     merge.load_state_dict(torch.load('./models/merge'))
 
 
+    '''
     print('test mwp model:')
     value_ac = 0
     equation_ac = 0
@@ -121,8 +122,10 @@ for fold in range(5):
     print("test_answer_acc", float(equation_ac) / eval_total, float(value_ac) / eval_total)
     print("testing time", time_since(time.time() - start))
     print("------------------------------------------------------")
+    '''
 
 
+    print('train probing compare task')
     for epoch in range(n_epochs):
         # encoder_scheduler.step()
         # predict_scheduler.step()
@@ -148,7 +151,7 @@ for fold in range(5):
         
 
         print("training loss:", loss_total / len(input_lengths))
-        print("training acc:", correct_sum / len(train_pairs))
+        print("training acc:", float(correct_sum) / len(train_pairs))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
         
