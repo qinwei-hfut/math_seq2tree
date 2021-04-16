@@ -831,6 +831,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
     # pdb.set_trace()
+    encoder_outputs = encoder_outputs.detach()
 
     cpair_pos_batch = []
     cpair_num_batch = []                  # 这是一个batch的数据，每一个是一个数学题中，抽出的那两个数字
@@ -869,13 +870,19 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
     probing_comp_target_batch = []
     for i in range(len(cpair_num_batch)):
         probing_comp_target_batch.append(1. if cpair_num_batch[i][0] > cpair_num_batch[i][1] else 0.)
-    probing_comp_target_batch_tensor = torch.tensor(probing_comp_target_batch)
+    probing_comp_target_batch_tensor = torch.tensor(probing_comp_target_batch).unsqueeze(dim=1)
 
 
     left_contextual_vector = torch.stack(cpair_input_feature_batch_left)
     right_contextual_vector = torch.stack(cpair_input_feature_batch_right)
     outputs=probing_compare_module(left_contextual_vector,right_contextual_vector)
+
+    criterion = torch.nn.BCEWithLogitsLoss()
+    loss = criterion(outputs,probing_comp_target_batch_tensor)
     pdb.set_trace()
+    probing_compare_optim.zero_grad()
+    loss.backward()
+    probing_compare_optim.step()
     # 现在，我们需要从每个句子中，抽出两个num，然后根据对应vector(encoder_outputs中来的)，去预测二者大小关系；
     # 同时，我们也需要计算出，二者本来的关系；这样的话，我们可能需要在前面处理数据；然后按照batch传入？
 
