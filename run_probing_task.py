@@ -126,6 +126,7 @@ for fold in range(5):
 
 
     print('train probing compare task')
+    best_test_acc = 0
     for epoch in range(n_epochs):
         # encoder_scheduler.step()
         # predict_scheduler.step()
@@ -181,10 +182,12 @@ for fold in range(5):
             correct_total_test += correct_sum_test
         
         
-
+        if  float(correct_total_test)/len(test_pairs) > best_test_acc:
+            best_test_acc =  float(correct_total_test)/len(test_pairs)
         print("test loss:", loss_total / len(input_lengths))
         print("test acc:", float(correct_total_test)/len(test_pairs))
         print("training time", time_since(time.time() - start))
+        print('best test acc:', best_test_acc)
         print("--------------------------------")
         
 
