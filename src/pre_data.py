@@ -645,6 +645,8 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, cop
     train_pairs = []
     test_pairs = []
 
+    pdb.set_trace()
+
     print("Indexing words...")
     for pair in pairs_trained:
         if not tree:
