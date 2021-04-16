@@ -102,7 +102,7 @@ for fold in range(5):
     merge.load_state_dict(torch.load('./models/merge'))
 
 
-    test_loaded_model = True
+    test_loaded_model = False
     if test_loaded_model:
         print('test mwp model:')
         value_ac = 0
