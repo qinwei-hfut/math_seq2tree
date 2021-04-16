@@ -40,7 +40,7 @@ fold_pairs.append(pairs[(fold_size * 4):])
 best_acc_fold = []
 
 for fold in range(5):
-    if fold < 3:
+    if fold < 4:
         continue
     pairs_tested = []
     pairs_trained = []

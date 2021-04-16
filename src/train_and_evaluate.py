@@ -865,6 +865,11 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
                 cpair_num_batch[i][j] = float(cpair_num_batch[i][j])/100.
             else:
                 cpair_num_batch[i][j] = float(cpair_num_batch[i][j])
+    
+    probing_comp_target_batch = []
+    for i in range(len(cpair_num_batch)):
+        probing_comp_target_batch.append(cpair_num_batch[i][0] > cpair_num_batch[i][1])
+    torch.stack(probing_comp_target_batch)
 
 
     left_contextual_vector = torch.stack(cpair_input_feature_batch_left)
