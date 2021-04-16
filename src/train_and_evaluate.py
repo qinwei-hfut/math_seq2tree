@@ -879,7 +879,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
 
     criterion = torch.nn.BCEWithLogitsLoss()
     loss = criterion(outputs,probing_comp_target_batch_tensor)
-    pdb.set_trace()
+    # pdb.set_trace()
     probing_compare_optim.zero_grad()
     loss.backward()
     probing_compare_optim.step()
