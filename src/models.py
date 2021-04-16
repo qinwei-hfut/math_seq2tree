@@ -22,7 +22,7 @@ class Probing_Compare_Module(nn.Module):
                                                     torch.nn.Linear(in_features=hidden_size, out_features=1))
 
     def forward(self, input1, input2):
-        pdb.set_trace()
+        # pdb.set_trace()
         if self.cat:
             # TODO cat的维度需要确定
             input_ = torch.cat((input1,input2),dim=1)

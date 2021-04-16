@@ -89,6 +89,7 @@ for fold in range(5):
         predict.cuda()
         generate.cuda()
         merge.cuda()
+        probing_compare_module.cuda()
 
     generate_num_ids = []
     for num in generate_nums:
