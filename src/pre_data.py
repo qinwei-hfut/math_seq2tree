@@ -21,6 +21,7 @@ class Lang:
         self.num_start = 0
 
     def add_sen_to_vocab(self, sentence):  # add words of sentence to vocab
+        # 把句子中的每次词语都收录其中，并记录在整个lang中出现都次数；
         for word in sentence:
             if re.search("N\d+|NUM|\d+", word):
                 continue
@@ -645,8 +646,9 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, cop
     train_pairs = []
     test_pairs = []
 
-    pdb.set_trace()
+    # pdb.set_trace()
 
+    # 构建input和output的word dict
     print("Indexing words...")
     for pair in pairs_trained:
         if not tree:
@@ -661,6 +663,8 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, cop
     else:
         output_lang.build_output_lang(generate_nums, copy_nums)
 
+    ##################################
+    ##
     for pair in pairs_trained:
         num_stack = []
         for word in pair[1]:
@@ -678,14 +682,20 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, cop
                 num_stack.append([_ for _ in range(len(pair[2]))])
 
         num_stack.reverse()
+        ## 这个中间的部分似乎可以省略；
+        ###############################################
         input_cell = indexes_from_sentence(input_lang, pair[0])
         output_cell = indexes_from_sentence(output_lang, pair[1], tree)
         # train_pairs.append((input_cell, len(input_cell), output_cell, len(output_cell),
         #                     pair[2], pair[3], num_stack, pair[4]))
         train_pairs.append((input_cell, len(input_cell), output_cell, len(output_cell),
                             pair[2], pair[3], num_stack))
+        pdb.set_trace()
     print('Indexed %d words in input language, %d words in output' % (input_lang.n_words, output_lang.n_words))
     print('Number of training data %d' % (len(train_pairs)))
+
+    ######################################################
+    ##
     for pair in pairs_tested:
         num_stack = []
         for word in pair[1]:
@@ -703,6 +713,8 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, cop
                 num_stack.append([_ for _ in range(len(pair[2]))])
 
         num_stack.reverse()
+        ##这段似乎也是可以省略掉的
+        ###################################################
         input_cell = indexes_from_sentence(input_lang, pair[0])
         output_cell = indexes_from_sentence(output_lang, pair[1], tree)
         # train_pairs.append((input_cell, len(input_cell), output_cell, len(output_cell),
