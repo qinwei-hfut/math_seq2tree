@@ -146,9 +146,14 @@ for fold in range(5):
         
         correct_total = 0
         for idx in range(len(input_lengths)):
+
+            '''
             loss_probing_compare, correct_sum = train_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
             loss_total += loss_probing_compare
             correct_total += correct_sum
+            '''
+
+            train_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
         
         
 

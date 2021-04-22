@@ -771,7 +771,183 @@ def train_tree(input_batch, input_length, target_batch, target_length, nums_stac
     merge_optimizer.step()
     return loss.item()  # , loss_0.item(), loss_1.item()
 
+class Opt_Result:
+    def __init__(self, optorA, optorB):
+        self.NUM_opt_count = {}    # 用来统计每个数字已经运算了几次
+        self.NUM_count = {}  # 用来统计每个数字在公式中出现了几次
+        self.dist = {}
 
+        if isinstance(optorA,str) and isinstance(optorB,str):
+            self.NUM_opt_count[optorA] = 1
+            self.NUM_count[optorA] = 1
+
+            if optorB in self.NUM_count:
+                temp = optorB
+                optorB = optorB+'__'+str(self.NUM_count[optorB])
+                self.NUM_opt_count[optorB] = 1
+                self.NUM_count[temp] += 1
+            else:
+                self.NUM_opt_count[optorB] = 1
+                self.NUM_count[optorB] = 1 
+            # 这里可以检测一下dist[optorA][optorB]现在不存在
+            if optorA not in self.dist:
+                self.dist[optorA]={}
+            if optorB not in self.dist:
+                self.dist[optorB]={}
+            self.dist[optorA][optorB] = 2
+            self.dist[optorB][optorA] = 2
+
+        # TODO 注意多个if之间的判断逻辑
+        elif  isinstance(optorA,str) and isinstance(optorB,Opt_Result):
+            # 直接先融合 Opt_Result B的内容
+            self.dist = optorB.dist
+            optorB.step()
+            self.NUM_opt_count = optorB.NUM_opt_count
+            self.NUM_count = optorB.NUM_count
+
+            if optorA in self.NUM_count:
+                temp = optorA
+                optorA = optorA+'__'+str(self.NUM_count[optorA])
+                self.NUM_count[temp] += 1
+            else:
+                self.NUM_count[optorA] = 1
+            self.NUM_opt_count[optorA] = 1
+
+            for k,v in optorB.NUM_opt_count.items():
+                if optorA not in self.dist:
+                    self.dist[optorA] = {}
+                self.dist[optorA][k] = v+1
+                self.dist[k][optorA] = v+1
+            
+        elif isinstance(optorA,Opt_Result) and isinstance(optorB,str):
+            self.dist = optorA.dist
+            optorA.step()
+            self.NUM_opt_count = optorA.NUM_opt_count
+            self.NUM_count = optorA.NUM_count
+
+            if optorB in self.NUM_count:
+                temp = optorB
+                optorB = optorB+'__'+str(self.NUM_count[optorB])
+                self.NUM_count[temp] += 1
+            else:
+                self.NUM_count[optorB] = 1 
+            self.NUM_opt_count[optorB] = 1
+            
+            for k,v in optorA.NUM_opt_count.items():
+                if optorB not in self.dist:
+                    self.dist[optorB] = {}
+                self.dist[optorB][k] = v+1
+                self.dist[k][optorB] = v+1
+            
+
+        elif isinstance(optorA,Opt_Result) and isinstance(optorB,Opt_Result):
+            self.dist = optorA.dist
+            optorA.step()
+            optorB.step()
+            self.NUM_opt_count = optorA.NUM_opt_count
+            self.NUM_count = optorA.NUM_count
+
+            for k,v in optorB.NUM_opt_count.items():
+                pre_k = k
+                short_k = k.split('__')[0]
+                if short_k in self.NUM_count:
+                    k = short_k+'__'+str(self.NUM_count[short_k]) 
+                    self.NUM_count[short_k] += 1
+                    # 将optorB中dist的旧变量转换成新的变量名
+                    optorB.dist[k] = optorB.dist.pop(pre_k)
+                    for k1,v1 in optorB.dist.items():
+                        if pre_k in v1:
+                            optorB.dist[k1][k] = optorB.dist[k1].pop(pre_k)
+                    self.NUM_opt_count[k] = v
+                    
+                else:
+                    self.NUM_opt_count[short_k] = v
+                    self.NUM_count[short_k] = 1
+
+                # 将optorB的距离记录，完全复制到新的self.dist
+            for k,v in optorB.NUM_opt_count.items():
+                for k2,v2 in optorB.dist[k].items():
+                    if k not in self.dist:
+                        self.dist[k] = {}
+                    self.dist[k][k2] = v2
+                    if k2 not in self.dist:
+                        self.dist[k2] = {}
+                    self.dist[k2][k] = v2
+
+            # 两个optor_result A B 之间的点的距离计算；
+            for k,v in optorB.NUM_opt_count.items():
+                for k_A,v_A in optorA.NUM_opt_count.items():
+                    self.dist[k_A][k] = v+v_A
+                    self.dist[k][k_A] = v+v_A      
+
+    def step(self):
+        for k in self.NUM_opt_count:
+            self.NUM_opt_count[k] += 1
+
+
+class Stack(list):
+    def __init__(self):
+        self.base = []
+        self.dist = {}
+    
+    def push(self,c):
+        self.base.append(c)
+        self.update()
+
+    def update(self):
+        # TODO 判断逻辑需要改造
+        if len(self.base) >=3 and (isinstance(self.base[-1],str) or isinstance(self.base[-1],Opt_Result)) and (isinstance(self.base[-2],str) or isinstance(self.base[-2],Opt_Result)) and ( isinstance(self.base[-3],str) or isinstance(self.base[-3],Opt_Result)):
+            right = self.base.pop()
+            left = self.base.pop()
+            opt = self.base.pop()
+            temp_opt_result = Opt_Result(left, right) # 这一步应该计算哪两个新的元素见面了
+            self.base.append(temp_opt_result)
+
+
+#  先写一个function，可以将该equation中的任何2个num之间的距离求出来；
+#  这是一个数学题级别的计算；不是成batch的
+def compute_tree_distance(idx_equation, lang):
+    equation = equation_from_index(idx_equation,lang)
+    stack = Stack()
+    for c in equation:
+        stack.push(c)
+    pdb.set_trace()
+
+# '''
+def train_probing_distance(input_batch, input_length,output_batch, encoder, probing_distance_module, probing_compare_optim,
+               nums_batch, num_pos,output_lang):
+
+    input_var = torch.LongTensor(input_batch).transpose(0, 1)
+    encoder.train()
+    probing_distance_module.train()
+    if USE_CUDA:
+        input_var = input_var.cuda()
+    encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
+    # pdb.set_trace()
+    encoder_outputs = encoder_outputs.detach()
+
+    # 需要每一个样本跑一次；
+    # 如果用来进行train encoder的话，每个样本单独forward会不会有影响呢？
+    # 没有影响的，因为encoder的数据是每个batch一起来的；
+    for idx in range(len(input_batch)):
+        pdb.set_trace()
+        compute_tree_distance(output_batch[idx],output_lang)
+        # for i in range(len(num_pos[idx])):
+        #     for j in range(i+1,len(num_pos[idx])):
+                
+        #         distance_vector = (encoder_outputs[num_pos[idx][i]][idx],encoder_outputs[num_pos[idx][j]][idx])
+
+
+            
+
+
+
+
+
+            
+
+
+# '''
 
 def train_probing_compare(input_batch, input_length, encoder, probing_compare_module, probing_compare_optim,
                nums_batch, num_pos):

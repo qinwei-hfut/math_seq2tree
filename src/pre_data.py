@@ -634,6 +634,12 @@ def indexes_from_sentence(lang, sentence, tree=False):
         res.append(lang.word2index["EOS"])
     return res
 
+# 
+def equation_from_index(lang, index):
+    equation = []
+    for idx in index:
+        equation.append(lang.index2word[idx])
+    return equation
 
 def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, copy_nums, tree=False):
     
@@ -713,7 +719,7 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, cop
                 num_stack.append([_ for _ in range(len(pair[2]))])
 
         num_stack.reverse()
-        ##这段似乎也是可以省略掉的
+        ## 这段似乎也是可以省略掉的
         ###################################################
         input_cell = indexes_from_sentence(input_lang, pair[0])
         output_cell = indexes_from_sentence(output_lang, pair[1], tree)
