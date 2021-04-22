@@ -904,6 +904,7 @@ class Stack(list):
 
     def update(self):
         print(self.base)
+        # print()
         # (self.base[-3] in self.output_lang.index2word[5:22] and isinstance(self.base[-3],str)) 
         if len(self.base) >=3 and  (self.base[-1] in self.output_lang.index2word[5:22] if isinstance(self.base[-1],str) else isinstance(self.base[-1],Opt_Result)) \
             and (self.base[-2] in self.output_lang.index2word[5:22] if isinstance(self.base[-2],str) else isinstance(self.base[-2],Opt_Result)) \
@@ -921,6 +922,7 @@ def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
     # equation = ['-', '-', 'N0', '1', '1']
     stack = Stack(lang)
+    print(equation)
     # pdb.set_trace()
     for c in equation:
         stack.push(c)
