@@ -797,7 +797,6 @@ class Opt_Result:
             self.dist[optorA][optorB] = 2
             self.dist[optorB][optorA] = 2
 
-        # TODO 注意多个if之间的判断逻辑
         elif  isinstance(optorA,str) and isinstance(optorB,Opt_Result):
             # 直接先融合 Opt_Result B的内容
             self.dist = optorB.dist
@@ -813,11 +812,15 @@ class Opt_Result:
                 self.NUM_count[optorA] = 1
             self.NUM_opt_count[optorA] = 1
 
+            print('before')
+            print(self.dist)
             for k,v in optorB.NUM_opt_count.items():
                 if optorA not in self.dist:
                     self.dist[optorA] = {}
                 self.dist[optorA][k] = v+1
                 self.dist[k][optorA] = v+1
+            print('after')
+            print(self.dist)
             
         elif isinstance(optorA,Opt_Result) and isinstance(optorB,str):
             self.dist = optorA.dist
@@ -913,6 +916,7 @@ class Stack(list):
 #  这是一个数学题级别的计算；不是成batch的
 def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
+    equation = ['-', '-', 'N0', '1', '1']
     stack = Stack(lang)
     # pdb.set_trace()
     for c in equation:
