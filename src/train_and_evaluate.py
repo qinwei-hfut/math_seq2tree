@@ -860,6 +860,7 @@ class Opt_Result:
                     k = short_k+'__'+str(self.NUM_count[short_k]) 
                     self.NUM_count[short_k] += 1
                     # 将optorB中dist的旧变量转换成新的变量名
+                    optorB.NUM_opt_count[k] = optorB.NUM_opt_count.pop(pre_k)
                     optorB.dist[k] = optorB.dist.pop(pre_k)
                     for k1,v1 in optorB.dist.items():
                         if pre_k in v1:
