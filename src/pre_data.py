@@ -670,7 +670,7 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, cop
         output_lang.build_output_lang(generate_nums, copy_nums)
 
     ##################################
-    ##
+    ###########################中间的可以忽略
     for pair in pairs_trained:
         num_stack = []
         for word in pair[1]:
