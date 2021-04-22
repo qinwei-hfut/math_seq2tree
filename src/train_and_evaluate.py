@@ -834,16 +834,16 @@ class Opt_Result:
                 self.NUM_count[optorB] = 1 
             self.NUM_opt_count[optorB] = 1
             
-            print('before')
-            print(self.dist)
+            # print('before')
+            # print(self.dist)
             for k,v in optorA.NUM_opt_count.items():
                 if optorB not in self.dist:
                     self.dist[optorB] = {}
                 self.dist[optorB][k] = v+1
                 self.dist[k][optorB] = v+1
-            print('after')
-            print(self.dist)
-            pdb.set_trace()
+            # print('after')
+            # print(self.dist)
+            # pdb.set_trace()
             
 
         elif isinstance(optorA,Opt_Result) and isinstance(optorB,Opt_Result):
@@ -894,7 +894,7 @@ class Opt_Result:
 class Stack(list):
     def __init__(self,output_lang):
         self.base = []
-        self.dist = {}
+        # self.dist = {}
         self.output_lang = output_lang
         # self.opt_result
     
@@ -919,11 +919,12 @@ class Stack(list):
 #  这是一个数学题级别的计算；不是成batch的
 def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
-    equation = ['-', '-', 'N0', '1', '1']
+    # equation = ['-', '-', 'N0', '1', '1']
     stack = Stack(lang)
     # pdb.set_trace()
     for c in equation:
         stack.push(c)
+    print(stack.base[0].dist)
     pdb.set_trace()
 
 # '''
