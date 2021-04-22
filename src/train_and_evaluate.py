@@ -890,13 +890,14 @@ class Stack(list):
         self.base = []
         self.dist = {}
         self.output_lang = output_lang
+        # self.opt_result
     
     def push(self,c):
         self.base.append(c)
         self.update()
 
     def update(self):
-        # TODO 判断逻辑需要改造
+        print(self.base)
         # (self.base[-3] in self.output_lang.index2word[5:22] and isinstance(self.base[-3],str)) 
         if len(self.base) >=3 and  (self.base[-1] in self.output_lang.index2word[5:22] if isinstance(self.base[-1],str) else isinstance(self.base[-1],Opt_Result)) \
             and (self.base[-2] in self.output_lang.index2word[5:22] if isinstance(self.base[-2],str) else isinstance(self.base[-2],Opt_Result)) \
@@ -905,7 +906,7 @@ class Stack(list):
             left = self.base.pop()
             opt = self.base.pop()
             temp_opt_result = Opt_Result(left, right) # 这一步应该计算哪两个新的元素见面了
-            self.base.append(temp_opt_result)
+            self.push(temp_opt_result)
 
 
 #  先写一个function，可以将该equation中的任何2个num之间的距离求出来；
@@ -913,7 +914,7 @@ class Stack(list):
 def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
     stack = Stack(lang)
-    pdb.set_trace()
+    # pdb.set_trace()
     for c in equation:
         stack.push(c)
     pdb.set_trace()
