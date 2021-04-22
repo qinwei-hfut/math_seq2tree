@@ -696,7 +696,7 @@ def prepare_data(pairs_trained, pairs_tested, trim_min_count, generate_nums, cop
         #                     pair[2], pair[3], num_stack, pair[4]))
         train_pairs.append((input_cell, len(input_cell), output_cell, len(output_cell),
                             pair[2], pair[3], num_stack))
-        pdb.set_trace()
+        # pdb.set_trace()
     print('Indexed %d words in input language, %d words in output' % (input_lang.n_words, output_lang.n_words))
     print('Number of training data %d' % (len(train_pairs)))
 
