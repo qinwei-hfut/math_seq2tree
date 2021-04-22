@@ -812,15 +812,13 @@ class Opt_Result:
                 self.NUM_count[optorA] = 1
             self.NUM_opt_count[optorA] = 1
 
-            print('before')
-            print(self.dist)
+            
             for k,v in optorB.NUM_opt_count.items():
                 if optorA not in self.dist:
                     self.dist[optorA] = {}
                 self.dist[optorA][k] = v+1
                 self.dist[k][optorA] = v+1
-            print('after')
-            print(self.dist)
+            
             
         elif isinstance(optorA,Opt_Result) and isinstance(optorB,str):
             self.dist = optorA.dist
@@ -836,11 +834,16 @@ class Opt_Result:
                 self.NUM_count[optorB] = 1 
             self.NUM_opt_count[optorB] = 1
             
+            print('before')
+            print(self.dist)
             for k,v in optorA.NUM_opt_count.items():
                 if optorB not in self.dist:
                     self.dist[optorB] = {}
                 self.dist[optorB][k] = v+1
                 self.dist[k][optorB] = v+1
+            print('after')
+            print(self.dist)
+            pdb.set_trace()
             
 
         elif isinstance(optorA,Opt_Result) and isinstance(optorB,Opt_Result):
