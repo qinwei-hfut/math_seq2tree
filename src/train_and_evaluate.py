@@ -799,7 +799,7 @@ class Opt_Result:
 
         elif  isinstance(optorA,str) and isinstance(optorB,Opt_Result):
             # 直接先融合 Opt_Result B的内容
-            self.dist = optorB.dist
+            self.dist = optorB.dist.copy()
             optorB.step()
             self.NUM_opt_count = optorB.NUM_opt_count
             self.NUM_count = optorB.NUM_count
@@ -821,7 +821,7 @@ class Opt_Result:
             
             
         elif isinstance(optorA,Opt_Result) and isinstance(optorB,str):
-            self.dist = optorA.dist
+            self.dist = optorA.dist.copy()
             optorA.step()
             self.NUM_opt_count = optorA.NUM_opt_count
             self.NUM_count = optorA.NUM_count
@@ -847,7 +847,7 @@ class Opt_Result:
             
 
         elif isinstance(optorA,Opt_Result) and isinstance(optorB,Opt_Result):
-            self.dist = optorA.dist
+            self.dist = optorA.dist.copy()
             optorA.step()
             optorB.step()
             self.NUM_opt_count = optorA.NUM_opt_count
