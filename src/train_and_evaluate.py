@@ -801,8 +801,8 @@ class Opt_Result:
             # 直接先融合 Opt_Result B的内容
             self.dist = optorB.dist.copy()
             optorB.step()
-            self.NUM_opt_count = optorB.NUM_opt_count
-            self.NUM_count = optorB.NUM_count
+            self.NUM_opt_count = optorB.NUM_opt_count.copy()
+            self.NUM_count = optorB.NUM_count.copy()
 
             if optorA in self.NUM_count:
                 temp = optorA
@@ -823,8 +823,8 @@ class Opt_Result:
         elif isinstance(optorA,Opt_Result) and isinstance(optorB,str):
             self.dist = optorA.dist.copy()
             optorA.step()
-            self.NUM_opt_count = optorA.NUM_opt_count
-            self.NUM_count = optorA.NUM_count
+            self.NUM_opt_count = optorA.NUM_opt_count.copy()
+            self.NUM_count = optorA.NUM_count.copy()
 
             if optorB in self.NUM_count:
                 temp = optorB
@@ -850,8 +850,8 @@ class Opt_Result:
             self.dist = optorA.dist.copy()
             optorA.step()
             optorB.step()
-            self.NUM_opt_count = optorA.NUM_opt_count
-            self.NUM_count = optorA.NUM_count
+            self.NUM_opt_count = optorA.NUM_opt_count.copy()
+            self.NUM_count = optorA.NUM_count.copy()
 
             for k,v in optorB.NUM_opt_count.items():
                 pre_k = k
