@@ -909,6 +909,7 @@ class Stack(list):
 def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
     stack = Stack()
+    pdb.set_trace()
     for c in equation:
         stack.push(c)
     pdb.set_trace()
@@ -931,7 +932,7 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
     # 没有影响的，因为encoder的数据是每个batch一起来的；
     for idx in range(len(input_batch)):
         pdb.set_trace()
-        compute_tree_distance(output_batch[idx],output_lang)
+        compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
         # for i in range(len(num_pos[idx])):
         #     for j in range(i+1,len(num_pos[idx])):
                 
