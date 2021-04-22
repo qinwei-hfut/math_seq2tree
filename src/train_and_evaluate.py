@@ -853,14 +853,16 @@ class Opt_Result:
             self.NUM_opt_count = optorA.NUM_opt_count.copy()
             self.NUM_count = optorA.NUM_count.copy()
 
+            temp_optorB_NUM_opt_count = optorB.NUM_opt_count.copy()
+
             for k,v in optorB.NUM_opt_count.items():
                 pre_k = k
                 short_k = k.split('__')[0]
                 if short_k in self.NUM_count:
                     k = short_k+'__'+str(self.NUM_count[short_k]) 
                     self.NUM_count[short_k] += 1
-                    # 将optorB中dist的旧变量转换成新的变量名
-                    optorB.NUM_opt_count[k] = optorB.NUM_opt_count.pop(pre_k)
+                    # 将optorB中dist的旧变量转换成新的变量名，然后存在临时temp b中
+                    temp_optorB_NUM_opt_count[k] = temp_optorB_NUM_opt_count.pop(pre_k)
                     optorB.dist[k] = optorB.dist.pop(pre_k)
                     for k1,v1 in optorB.dist.items():
                         if pre_k in v1:
@@ -872,7 +874,7 @@ class Opt_Result:
                     self.NUM_count[short_k] = 1
 
                 # 将optorB的距离记录，完全复制到新的self.dist
-            for k,v in optorB.NUM_opt_count.items():
+            for k,v in temp_optorB_NUM_opt_count.items():
                 for k2,v2 in optorB.dist[k].items():
                     if k not in self.dist:
                         self.dist[k] = {}
@@ -882,7 +884,7 @@ class Opt_Result:
                     self.dist[k2][k] = v2
 
             # 两个optor_result A B 之间的点的距离计算；
-            for k,v in optorB.NUM_opt_count.items():
+            for k,v in temp_optorB_NUM_opt_count.items():
                 for k_A,v_A in optorA.NUM_opt_count.items():
                     self.dist[k_A][k] = v+v_A
                     self.dist[k][k_A] = v+v_A      
