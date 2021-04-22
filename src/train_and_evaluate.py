@@ -897,7 +897,7 @@ class Stack(list):
 
     def update(self):
         # TODO 判断逻辑需要改造
-        (self.base[-3] in self.output_lang.index2word[5:22] and isinstance(self.base[-3],str)) 
+        # (self.base[-3] in self.output_lang.index2word[5:22] and isinstance(self.base[-3],str)) 
         if len(self.base) >=3 and  (self.base[-1] in self.output_lang.index2word[5:22] if isinstance(self.base[-1],str) else isinstance(self.base[-1],Opt_Result)) \
             and (self.base[-2] in self.output_lang.index2word[5:22] if isinstance(self.base[-2],str) else isinstance(self.base[-2],Opt_Result)) \
             and (self.base[-3] in self.output_lang.index2word[0:5] and isinstance(self.base[-3],str)):
