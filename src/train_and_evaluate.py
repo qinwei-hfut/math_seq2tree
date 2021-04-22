@@ -886,9 +886,10 @@ class Opt_Result:
 
 
 class Stack(list):
-    def __init__(self):
+    def __init__(self,output_lang):
         self.base = []
         self.dist = {}
+        self.output_lang = output_lang
     
     def push(self,c):
         self.base.append(c)
@@ -896,7 +897,10 @@ class Stack(list):
 
     def update(self):
         # TODO 判断逻辑需要改造
-        if len(self.base) >=3 and (isinstance(self.base[-1],str) or isinstance(self.base[-1],Opt_Result)) and (isinstance(self.base[-2],str) or isinstance(self.base[-2],Opt_Result)) and ( isinstance(self.base[-3],str) or isinstance(self.base[-3],Opt_Result)):
+        (self.base[-3] in self.output_lang.index2word[5:22] and isinstance(self.base[-3],str)) 
+        if len(self.base) >=3 and  (self.base[-1] in self.output_lang.index2word[5:22] if isinstance(self.base[-1],str) else isinstance(self.base[-1],Opt_Result)) \
+            and (self.base[-2] in self.output_lang.index2word[5:22] if isinstance(self.base[-2],str) else isinstance(self.base[-2],Opt_Result)) \
+            and (self.base[-3] in self.output_lang.index2word[0:5] and isinstance(self.base[-3],str)):
             right = self.base.pop()
             left = self.base.pop()
             opt = self.base.pop()
@@ -908,7 +912,7 @@ class Stack(list):
 #  这是一个数学题级别的计算；不是成batch的
 def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
-    stack = Stack()
+    stack = Stack(lang)
     pdb.set_trace()
     for c in equation:
         stack.push(c)
