@@ -635,7 +635,7 @@ def indexes_from_sentence(lang, sentence, tree=False):
     return res
 
 # 
-def equation_from_index(lang, index):
+def equation_from_index(index, lang):
     equation = []
     for idx in index:
         equation.append(lang.index2word[idx])
