@@ -55,7 +55,7 @@ for fold in range(5):
 
     input_lang, output_lang, train_pairs, test_pairs = prepare_data(pairs_trained, pairs_tested, 5, generate_nums,
                                                                     copy_nums, tree=True)
-    pdb.set_trace()
+    # pdb.set_trace()
     # Initialize models
     encoder = EncoderSeq(input_size=input_lang.n_words, embedding_size=embedding_size, hidden_size=hidden_size,
                          n_layers=n_layers)
@@ -153,7 +153,7 @@ for fold in range(5):
             correct_total += correct_sum
             '''
 
-            train_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            train_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
         
         
 

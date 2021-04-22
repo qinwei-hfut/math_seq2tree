@@ -914,7 +914,7 @@ def compute_tree_distance(idx_equation, lang):
     pdb.set_trace()
 
 # '''
-def train_probing_distance(input_batch, input_length,output_batch, encoder, probing_distance_module, probing_compare_optim,
+def train_probing_distance(input_batch, input_length,output_batch, output_length, encoder, probing_distance_module, probing_compare_optim,
                nums_batch, num_pos,output_lang):
 
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
