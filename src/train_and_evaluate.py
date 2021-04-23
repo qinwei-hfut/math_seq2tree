@@ -960,6 +960,8 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
         # pdb.set_trace()
         if len(Num_list) < 2:
             continue
+        if 'UNK' in equation:
+            continue
 
         loss_pbl = []
         for i in range(len(Num_list)):
