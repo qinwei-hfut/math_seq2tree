@@ -932,7 +932,7 @@ def compute_tree_distance(idx_equation, lang):
         if c in lang.index2word[7:-1] and c not in Num_list:
             Num_list.append(c)
         stack.push(c)
-    # print(equation)
+    print(equation)
     return (stack.base[0].dist,equation, Num_list)
     # print(stack.base[0].dist)
     # pdb.set_trace()
@@ -1012,6 +1012,10 @@ def test_probing_distance(input_batch, input_length,output_batch, output_length,
         
         dist_dict,equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
         # pdb.set_trace()
+        if len(Num_list) < 2:
+            continue
+        if 'UNK' in equation:
+            continue
 
         loss_pbl = []
         for i in range(len(Num_list)):
