@@ -930,7 +930,7 @@ def compute_tree_distance(idx_equation, lang):
     Num_set = set()
     for c in equation:
         if c in lang.index2word[7:-1]:
-            Num_list.add(c)
+            Num_set.add(c)
         stack.push(c)
     return (stack.base[0].dist,equation, Num_set)
     # print(stack.base[0].dist)
