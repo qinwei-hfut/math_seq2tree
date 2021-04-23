@@ -937,7 +937,7 @@ def compute_tree_distance(idx_equation, lang):
     # pdb.set_trace()
 
 # '''
-def train_probing_distance(input_batch, input_length,output_batch, output_length, encoder, probing_distance_module, probing_compare_optim,
+def train_probing_distance(input_batch, input_length,output_batch, output_length, encoder, probing_distance_module, probing_distance_optim,
                nums_batch, num_pos,output_lang):
 
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
@@ -952,11 +952,13 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
     # 需要每一个样本跑一次；
     # 如果用来进行train encoder的话，每个样本单独forward会不会有影响呢？
     # 没有影响的，因为encoder的数据是每个batch一起来的；
+    loss_batch = []
     for idx in range(len(input_batch)):
         
         dist_dict,equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
-        pdb.set_trace()
+        # pdb.set_trace()
 
+        loss_pbl = []
         for i in range(len(Num_list)):
             for j in range(i+1, len(Num_list)):
                 num_i_pos = num_pos[idx][int(Num_list[i].replace('N',''))]
@@ -970,18 +972,65 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
                         for kk, vv in v.items():
                             if kk == Num_list[j] or kk.find(Num_list[j]+'__') != -1:
                                 edges.append(vv)
-                distance = sum(edges) / len(edges)
+                distance_tree = sum(edges) / len(edges)
 
-                print((Num_list[i]))
-                print((Num_list[j]))
-                print(distance)
-                print('--')
+                dist_feautre = probing_distance_module(feature_i,feature_j)
+                loss_pbl.append(torch.abs(dist_feautre - distance_tree))
 
-        # for i in range(len(num_pos[idx])):
-        #     for j in range(i+1,len(num_pos[idx])):
-                
-                # pdb.set_trace()
-                # distance_vector = (encoder_outputs[num_pos[idx][i]][idx],encoder_outputs[num_pos[idx][j]][idx])
+        loss_batch.append(sum(loss_pbl) / len(loss_pbl))
+    loss = sum(loss_batch) / len(loss_batch)
+    probing_distance_optim.zero_grad()
+    loss.backward()
+    probing_distance_optim.step()
+    return loss.item()
+
+
+def test_probing_distance(input_batch, input_length,output_batch, output_length, encoder, probing_distance_module, probing_distance_optim,
+               nums_batch, num_pos,output_lang):
+
+    input_var = torch.LongTensor(input_batch).transpose(0, 1)
+    encoder.eval()
+    probing_distance_module.eval()
+    if USE_CUDA:
+        input_var = input_var.cuda()
+    encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
+    # pdb.set_trace()
+    encoder_outputs = encoder_outputs.detach()
+
+    # 需要每一个样本跑一次；
+    # 如果用来进行train encoder的话，每个样本单独forward会不会有影响呢？
+    # 没有影响的，因为encoder的数据是每个batch一起来的；
+    loss_batch = []
+    for idx in range(len(input_batch)):
+        
+        dist_dict,equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
+        # pdb.set_trace()
+
+        loss_pbl = []
+        for i in range(len(Num_list)):
+            for j in range(i+1, len(Num_list)):
+                num_i_pos = num_pos[idx][int(Num_list[i].replace('N',''))]
+                num_j_pos = num_pos[idx][int(Num_list[j].replace('N',''))]
+                feature_i = encoder_outputs[num_i_pos][idx]
+                feature_j = encoder_outputs[num_j_pos][idx]
+
+                edges = []
+                for k,v in dist_dict.items():
+                    if k == Num_list[i] or k.find(Num_list[i]+'__')!= -1:
+                        for kk, vv in v.items():
+                            if kk == Num_list[j] or kk.find(Num_list[j]+'__') != -1:
+                                edges.append(vv)
+                distance_tree = sum(edges) / len(edges)
+
+                dist_feautre = probing_distance_module(feature_i,feature_j)
+                loss_pbl.append(torch.abs(dist_feautre - distance_tree))
+
+        loss_batch.append(sum(loss_pbl) / len(loss_pbl))
+    loss = sum(loss_batch) / len(loss_batch)
+    # probing_distance_optim.zero_grad()
+    # loss.backward()
+    # probing_distance_optim.step()
+    return loss.item()
 
 
             
