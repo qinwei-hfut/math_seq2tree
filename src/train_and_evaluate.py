@@ -925,14 +925,14 @@ def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
     # equation = ['/', '-', 'N3', 'N1', '*', '/', 'N1', 'N0', '/', 'N2', '+', 'N2', 'N3']
     stack = Stack(lang)
-    # print(equation)
+    print(equation)
     # pdb.set_trace()
     Num_list = []
     for c in equation:
         if c in lang.index2word[7:-1] and c not in Num_list:
             Num_list.append(c)
         stack.push(c)
-    print(equation)
+    # print(equation)
     return (stack,equation, Num_list)
     # print(stack.base[0].dist)
     # pdb.set_trace()
