@@ -933,7 +933,7 @@ def compute_tree_distance(idx_equation, lang):
             Num_list.append(c)
         stack.push(c)
     print(equation)
-    return (stack.base[0].dist,equation, Num_list)
+    return (stack,equation, Num_list)
     # print(stack.base[0].dist)
     # pdb.set_trace()
 
@@ -960,12 +960,13 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
         # print(output_length[idx])
         if output_length[idx] < 2:
             continue
-        dist_dict,equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
+        stack, equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
         # pdb.set_trace()
         if len(Num_list) < 2:
             continue
         if 'UNK' in equation:
             continue
+        dist_dict = stack.base[0].dist
 
         loss_pbl = []
         for i in range(len(Num_list)):
@@ -1016,12 +1017,13 @@ def test_probing_distance(input_batch, input_length,output_batch, output_length,
         
         if output_length[idx] < 2:
             continue
-        dist_dict,equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
+        stack,equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
         # pdb.set_trace()
         if len(Num_list) < 2:
             continue
         if 'UNK' in equation:
             continue
+        dist_dict = stack.base[0].dist
 
         loss_pbl = []
         for i in range(len(Num_list)):
