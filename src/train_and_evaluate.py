@@ -959,11 +959,24 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
 
         for i in range(len(Num_list)):
             for j in range(i+1, len(Num_list)):
-                # num_pos[idx][int(Num_list[i].replace('N',''))]
-                # num_pos[idx][int(Num_list[j].replace('N',''))]
+                num_i_pos = num_pos[idx][int(Num_list[i].replace('N',''))]
+                num_j_pos = num_pos[idx][int(Num_list[j].replace('N',''))]
+                feature_i = encoder_outputs[num_i_pos][idx]
+                feature_j = encoder_outputs[num_j_pos][idx]
 
-                print(int(Num_list[i].replace('N','')))
-                print(int(Num_list[j].replace('N','')))
+                edges = []
+                for k,v in dist_dict.items():
+                    if k == Num_list[i] or k.find(Num_list[i]+'__')!= -1:
+                        for kk, vv in v.items():
+                            if kk == Num_list[j] or kk.find(Num_list[j]+'__') != -1:
+                                edges.append(vv)
+                distance = sum(edges) / len(edges)
+
+                print((Num_list[i]))
+                print((Num_list[j]))
+                print(distance)
+                print('--')
+
         # for i in range(len(num_pos[idx])):
         #     for j in range(i+1,len(num_pos[idx])):
                 
