@@ -987,7 +987,10 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
             continue
         if 'UNK' in equation:
             continue
-        dist_dict = stack.base[0].dist
+        try:
+            dist_dict = stack.base[0].dist
+        except:
+            pdb.set_trace()
 
         loss_pbl = []
         for i in range(len(Num_list)):
