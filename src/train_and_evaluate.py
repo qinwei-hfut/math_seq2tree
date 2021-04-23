@@ -816,6 +816,8 @@ class Opt_Result:
             for k,v in optorB.NUM_opt_count.items():
                 if optorA not in self.dist:
                     self.dist[optorA] = {}
+                if k not in self.dist:
+                    self.dist[k] = {}
                 try:
                     self.dist[optorA][k] = v+1
                     self.dist[k][optorA] = v+1
