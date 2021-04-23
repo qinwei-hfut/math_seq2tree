@@ -990,7 +990,7 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
         try:
             dist_dict = stack.base[0].dist
         except:
-            pdb.set_trace()
+            continue
 
         loss_pbl = []
         for i in range(len(Num_list)):
