@@ -977,6 +977,8 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
                 dist_feautre = probing_distance_module(feature_i,feature_j)
                 loss_pbl.append(torch.abs(dist_feautre - distance_tree))
 
+        if len(loss_pbl) == 0:
+            pdb.set_trace()
         loss_batch.append(sum(loss_pbl) / len(loss_pbl))
     loss = sum(loss_batch) / len(loss_batch)
     probing_distance_optim.zero_grad()
