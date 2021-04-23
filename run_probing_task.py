@@ -137,7 +137,7 @@ for fold in range(5):
         # predict_scheduler.step()
         # generate_scheduler.step()
         # merge_scheduler.step()
-        loss_total = 0
+        
         # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
         # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
@@ -146,8 +146,34 @@ for fold in range(5):
         # pdb.set_trace()
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
+
+
+        # ######### evaluate probing compare task
+        print('evaluate probing task:')
+        loss_total_test = 0
+        # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
+        # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
+        # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
+        # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
+        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
+        # pdb.set_trace()
         start = time.time()
         
+        for idx in range(len(input_lengths)):
+            loss_dist = test_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_total_test += loss_dist
+            # print('test loss batch '+str(idx)+': '+str(loss_dist))
+        
+        
+        print("test loss:", loss_total_test / len(input_lengths))
+        print("test time", time_since(time.time() - start))
+        print("--------------------------------")
+
+
+        ###########################
+        print("training probing task:")
+        start = time.time()
+        loss_total = 0
         correct_total = 0
         for idx in range(len(input_lengths)):
 
@@ -174,26 +200,26 @@ for fold in range(5):
             # if epoch == n_epochs - 1:
             #     best_acc_fold.append((equation_ac, value_ac, eval_total))
         
-        # ######### evaluate probing compare task
-        print('evaluate probing task:')
-        loss_total_test = 0
-        # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
-        # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
-        # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
-        # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
-        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
-        # pdb.set_trace()
-        start = time.time()
+        # # ######### evaluate probing compare task
+        # print('evaluate probing task:')
+        # loss_total_test = 0
+        # # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
+        # # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
+        # # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
+        # # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
+        # input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
+        # # pdb.set_trace()
+        # start = time.time()
         
-        for idx in range(len(input_lengths)):
-            loss_dist = test_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
-            loss_total_test += loss_dist
-            # print('test loss batch '+str(idx)+': '+str(loss_dist))
+        # for idx in range(len(input_lengths)):
+        #     loss_dist = test_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+        #     loss_total_test += loss_dist
+        #     # print('test loss batch '+str(idx)+': '+str(loss_dist))
         
         
-        print("test loss:", loss_total_test / len(input_lengths))
-        print("test time", time_since(time.time() - start))
-        print("--------------------------------")
+        # print("test loss:", loss_total_test / len(input_lengths))
+        # print("test time", time_since(time.time() - start))
+        # print("--------------------------------")
 
 
         '''
