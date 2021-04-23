@@ -876,7 +876,7 @@ class Opt_Result:
                     except:
                         pdb.set_trace()
                     try:
-                        optorB.disk[k] = {}
+                        optorB.dist[k] = {}
                         optorB.dist[k] = optorB.dist.pop(pre_k)
                     except:
                         pdb.set_trace()
