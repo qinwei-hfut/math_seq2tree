@@ -906,7 +906,7 @@ class Stack(list):
         self.update()
 
     def update(self):
-        print(self.base)
+        # print(self.base)
         # print()
         # (self.base[-3] in self.output_lang.index2word[5:22] and isinstance(self.base[-3],str)) 
         if len(self.base) >=3 and  (self.base[-1] in self.output_lang.index2word[5:22] if isinstance(self.base[-1],str) else isinstance(self.base[-1],Opt_Result)) \
@@ -925,12 +925,13 @@ def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
     # equation = ['/', '-', 'N3', 'N1', '*', '/', 'N1', 'N0', '/', 'N2', '+', 'N2', 'N3']
     stack = Stack(lang)
-    print(equation)
+    # print(equation)
     # pdb.set_trace()
     for c in equation:
         stack.push(c)
-    print(stack.base[0].dist)
-    pdb.set_trace()
+    return stack.base[0].dist
+    # print(stack.base[0].dist)
+    # pdb.set_trace()
 
 # '''
 def train_probing_distance(input_batch, input_length,output_batch, output_length, encoder, probing_distance_module, probing_compare_optim,
@@ -950,11 +951,11 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
     # 没有影响的，因为encoder的数据是每个batch一起来的；
     for idx in range(len(input_batch)):
         # pdb.set_trace()
-        compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
-        # for i in range(len(num_pos[idx])):
-        #     for j in range(i+1,len(num_pos[idx])):
-                
-        #         distance_vector = (encoder_outputs[num_pos[idx][i]][idx],encoder_outputs[num_pos[idx][j]][idx])
+        dist_dict = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
+        for i in range(len(num_pos[idx])):
+            for j in range(i+1,len(num_pos[idx])):
+                pdb.set_trace()
+                # distance_vector = (encoder_outputs[num_pos[idx][i]][idx],encoder_outputs[num_pos[idx][j]][idx])
 
 
             
