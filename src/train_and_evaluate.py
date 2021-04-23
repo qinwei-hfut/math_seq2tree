@@ -816,6 +816,7 @@ class Opt_Result:
             for k,v in optorB.NUM_opt_count.items():
                 if optorA not in self.dist:
                     self.dist[optorA] = {}
+                # TODO comment this; debug
                 if k not in self.dist:
                     self.dist[k] = {}
                 try:
@@ -867,7 +868,10 @@ class Opt_Result:
                     k = short_k+'__'+str(self.NUM_count[short_k]) 
                     self.NUM_count[short_k] += 1
                     # 将optorB中dist的旧变量转换成新的变量名，然后存在临时temp b中
-                    temp_optorB_NUM_opt_count[k] = temp_optorB_NUM_opt_count.pop(pre_k)
+                    try:
+                        temp_optorB_NUM_opt_count[k] = temp_optorB_NUM_opt_count.pop(pre_k)
+                    except:
+                        pdb.set_trace()
                     optorB.dist[k] = optorB.dist.pop(pre_k)
                     for k1,v1 in optorB.dist.items():
                         if pre_k in v1:
