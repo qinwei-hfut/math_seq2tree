@@ -959,8 +959,11 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
 
         for i in range(len(Num_list)):
             for j in range(i+1, len(Num_list)):
-                print(i)
-                print(j)
+                # num_pos[idx][int(Num_list[i].replace('N',''))]
+                # num_pos[idx][int(Num_list[j].replace('N',''))]
+
+                print(int(Num_list[i].replace('N','')))
+                print(int(Num_list[j].replace('N','')))
         # for i in range(len(num_pos[idx])):
         #     for j in range(i+1,len(num_pos[idx])):
                 
