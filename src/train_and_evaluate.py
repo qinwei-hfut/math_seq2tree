@@ -932,6 +932,7 @@ def compute_tree_distance(idx_equation, lang):
         if c in lang.index2word[7:-1] and c not in Num_list:
             Num_list.append(c)
         stack.push(c)
+    print(equation)
     return (stack.base[0].dist,equation, Num_list)
     # print(stack.base[0].dist)
     # pdb.set_trace()
