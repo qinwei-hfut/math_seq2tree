@@ -875,7 +875,10 @@ class Opt_Result:
                         temp_optorB_NUM_opt_count[k] = temp_optorB_NUM_opt_count.pop(pre_k)
                     except:
                         pdb.set_trace()
-                    optorB.dist[k] = optorB.dist.pop(pre_k)
+                    try:
+                        optorB.dist[k] = optorB.dist.pop(pre_k)
+                    except:
+                        pdb.set_trace()
                     for k1,v1 in optorB.dist.items():
                         if pre_k in v1:
                             optorB.dist[k1][k] = optorB.dist[k1].pop(pre_k)
