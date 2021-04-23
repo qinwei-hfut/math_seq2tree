@@ -816,8 +816,11 @@ class Opt_Result:
             for k,v in optorB.NUM_opt_count.items():
                 if optorA not in self.dist:
                     self.dist[optorA] = {}
-                self.dist[optorA][k] = v+1
-                self.dist[k][optorA] = v+1
+                try:
+                    self.dist[optorA][k] = v+1
+                    self.dist[k][optorA] = v+1
+                except:
+                    pdb.set_trace()
             
             
         elif isinstance(optorA,Opt_Result) and isinstance(optorB,str):
