@@ -956,6 +956,8 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
     loss_batch = []
     for idx in range(len(input_batch)):
         
+        print(output_batch[idx])
+        print(output_length[idx])
         dist_dict,equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
         # pdb.set_trace()
         if len(Num_list) < 2:
