@@ -946,7 +946,7 @@ def compute_tree_distance(idx_equation, lang):
     equation = equation_from_index(idx_equation,lang)
     # equation = ['/', '-', 'N3', 'N1', '*', '/', 'N1', 'N0', '/', 'N2', '+', 'N2', 'N3']
     stack = Stack(lang)
-    print(equation)
+    # print(equation)
     # pdb.set_trace()
     Num_list = []
     for c in equation:
