@@ -898,6 +898,11 @@ class Opt_Result:
             # 两个optor_result A B 之间的点的距离计算；
             for k,v in temp_optorB_NUM_opt_count.items():
                 for k_A,v_A in optorA.NUM_opt_count.items():
+                    # TODO
+                    if k_A not in self.dist:
+                        self.dist[k_A] = {}
+                    if k not in self.dist:
+                        self.dist[k] = {}
                     self.dist[k_A][k] = v+v_A
                     self.dist[k][k_A] = v+v_A      
 
