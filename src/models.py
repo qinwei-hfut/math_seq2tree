@@ -32,7 +32,17 @@ class Probing_Compare_Module(nn.Module):
         outputs = self.decode_layer(input_)
         return outputs
 
+class Probing_Distance_Module(nn.Module):
+    def __init__(self, embedding_size, hidden_size):
+        super(Probing_Distance_Module, self).__init__()
+        self.decode_layer =  torch.nn.Linear(in_features= embedding_size , out_features=hidden_size)
 
+    def forward(self, input1, input2):
+        input_ = input1 - input2
+        outputs = self.decode_layer(input_)
+        outputs = outputs.pow(2)
+        sq_dist = outputs.sum()
+        return sq_dist
 
 
 
