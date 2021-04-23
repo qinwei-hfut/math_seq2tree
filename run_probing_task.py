@@ -157,7 +157,7 @@ for fold in range(5):
             correct_total += correct_sum
             '''
 
-            loss_dist = train_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_dist = train_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_dist
         
 
@@ -186,7 +186,7 @@ for fold in range(5):
         start = time.time()
         
         for idx in range(len(input_lengths)):
-            loss_dist = test_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_dist = test_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total_test += loss_dist
             print('test loss batch '+str(idx)+': '+str(loss_dist))
         
