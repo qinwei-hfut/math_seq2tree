@@ -1010,9 +1010,9 @@ def train_probing_opter(input_batch, input_length,output_batch, output_length, e
                         logits = probing_opter_module(feature_i,feature_j)
                         # pdb.set_trace()
                         _,predict=torch.max(logits,dim=1)
-                        pdb.set_trace()
+                        # pdb.set_trace()
                         correct_list_batch.append(predict==output_lang.word2index[c])
-                        loss_plm.append(criterion(logits,output_lang.word2index[c]))
+                        loss_plm.append(criterion(logits,torch.tensor(output_lang.word2index[c]).view(1).cuda()))
         # loss_batch.append(sum(loss_plm) / len(loss_plm))
         # pdb.set_trace()
         if len(loss_plm) == 0:
