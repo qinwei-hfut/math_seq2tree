@@ -998,7 +998,7 @@ def train_probing_opter(input_batch, input_length,output_batch, output_length, e
 
         loss_plm = []
         for idx_e, c in enumerate(equation):
-            if c in output_lang[0:4]:
+            if c in output_lang.index2word[0:4]:
                 if equation[idx_e+1] in output_lang.index2word[7:22]:
                     if equation[idx_e+2] in output_lang.index2word[7:22]:
                         num_i_pos = num_pos[idx][int(equation[idx_e+1].replace('N',''))]
