@@ -236,23 +236,25 @@ for fold in range(5):
         print("--------------------------------")
         '''
 
-        '''
+        
         ##### evaluate probing_opter()
-        correct_total_test = 0
+        print('evaluate probing opter task:')
+        start = time.time()
+        correct_total_total_test = []
+        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
         for idx in range(len(input_lengths)):
-            loss_probing_compare, correct_sum_test = test_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
+            loss_probing_compare, correct_list_batch = test_probing_opter(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_probing_compare
-            correct_total_test += correct_sum_test
+            correct_total_total_test += correct_list_batch
         
         
-        if  float(correct_total_test)/len(test_pairs) > best_test_acc:
-            best_test_acc =  float(correct_total_test)/len(test_pairs)
+        # if  float(correct_total_test)/len(test_pairs) > best_test_acc:
+        #     best_test_acc =  float(correct_total_test)/len(test_pairs)
         print("test loss:", loss_total / len(input_lengths))
-        print("test acc:", float(correct_total_test)/len(test_pairs))
-        print("training time", time_since(time.time() - start))
-        print('best test acc:', best_test_acc)
+        print("test acc:", sum(correct_total_total_test).item() / len(correct_total_total_test))
+        print("test time", time_since(time.time() - start))
         print("--------------------------------")
-        '''
+        
         
 
 
