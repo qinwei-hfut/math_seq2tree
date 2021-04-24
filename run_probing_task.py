@@ -150,9 +150,9 @@ for fold in range(5):
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
 
-
+        '''
         # ######### evaluate probing distance task
-        print('evaluate probing task:')
+        print('evaluate probing distance task:')
         loss_total_test = 0
         loss_total_test_random=0
         # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
@@ -176,6 +176,7 @@ for fold in range(5):
         print("--------------------------------")
         ##
         #################
+        '''
 
 
         ###########################

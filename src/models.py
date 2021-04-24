@@ -31,7 +31,7 @@ class Probing_Opter_Module(nn.Module):
             input_ = input1+input2
 
         outputs = self.decode_layer(input_)
-        print(outputs.shape)
+        pdb.set_trace()
         outputs = torch.nn.functional.softmax(outputs,dim=1)
         return outputs
 class Probing_Compare_Module(nn.Module):
