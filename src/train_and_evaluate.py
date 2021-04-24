@@ -1011,7 +1011,7 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
                             if kk == Num_list[j] or kk.find(Num_list[j]+'__') != -1:
                                 edges.append(vv)
                 distance_tree = sum(edges) / len(edges)
-                print(Num_list[i]+'   '+Num_list[j]+': '+distance_tree)
+                print(str(Num_list[i])+'   '+str(Num_list[j])+': '+str(distance_tree))
 
                 dist_feautre = probing_distance_module(feature_i,feature_j)
                 loss_pbl.append(torch.abs(dist_feautre - distance_tree))
