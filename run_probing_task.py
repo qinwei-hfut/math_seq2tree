@@ -151,6 +151,7 @@ for fold in range(5):
         # ######### evaluate probing compare task
         print('evaluate probing task:')
         loss_total_test = 0
+        loss_total_test_random=0
         # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
         # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
@@ -162,10 +163,14 @@ for fold in range(5):
         for idx in range(len(input_lengths)):
             loss_dist = test_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total_test += loss_dist
+
+            loss_dist_random = test_probing_distance_random(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_total_test_random += loss_dist_random
             # print('test loss batch '+str(idx)+': '+str(loss_dist))
         
         
         print("test loss:", loss_total_test / len(input_lengths))
+        print("test loss random:", loss_total_test_random / len(input_lengths))
         print("test time", time_since(time.time() - start))
         print("--------------------------------")
 
