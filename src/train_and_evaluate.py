@@ -993,8 +993,8 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
             continue
 
        
-        print(equation)
-        print(dist_dict)
+        # print(equation)
+        # print(dist_dict)
 
         loss_pbl = []
         for i in range(len(Num_list)):
