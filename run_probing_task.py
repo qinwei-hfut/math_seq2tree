@@ -68,6 +68,7 @@ for fold in range(5):
     # ----- -----TODO hidden size
     probing_compare_module = Probing_Compare_Module(embedding_size=hidden_size,hidden_size= 200,linear=False,cat=True)
     probing_distance_module = Probing_Distance_Module(embedding_size=hidden_size,hidden_size=256)
+    probing_opter_module = Probing_Opter_Module(embedding_size=hidden_size,hidden_size= 200,linear=False,cat=True)
     # the embedding layer is  only for generated number embeddings, operators, and paddings
 
     # encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
@@ -76,7 +77,7 @@ for fold in range(5):
     # merge_optimizer = torch.optim.Adam(merge.parameters(), lr=learning_rate, weight_decay=weight_decay)
     probing_compare_optim = torch.optim.SGD(probing_compare_module.parameters(), lr=0.01, momentum=0.5)
     probing_distance_optim = torch.optim.SGD(probing_distance_module.parameters(), lr=0.001, momentum=0.5)
-
+    probing_opter_optim = torch.optim.SGD(probing_opter_module.parameters(), lr=0.001, momentum=0.5)
 
     # encoder_scheduler = torch.optim.lr_scheduler.StepLR(encoder_optimizer, step_size=20, gamma=0.5)
     # predict_scheduler = torch.optim.lr_scheduler.StepLR(predict_optimizer, step_size=20, gamma=0.5)
@@ -85,6 +86,7 @@ for fold in range(5):
     # TODO super parameter ?
     probing_compare_scheduler = torch.optim.lr_scheduler.StepLR(probing_compare_optim, step_size=20,gamma=0.5)
     probing_distance_scheduler = torch.optim.lr_scheduler.StepLR(probing_distance_optim, step_size=20,gamma=0.5)
+    probing_opter_scheduler = torch.optim.lr_scheduler.StepLR(probing_opter_optim, step_size=20,gamma=0.5)
 
     # Move models to GPU
     if USE_CUDA:
@@ -94,6 +96,7 @@ for fold in range(5):
         merge.cuda()
         probing_compare_module.cuda()
         probing_distance_module.cuda()
+        probing_opter_module.cuda()
 
     generate_num_ids = []
     for num in generate_nums:
@@ -148,7 +151,7 @@ for fold in range(5):
         print("epoch:", epoch + 1)
 
 
-        # ######### evaluate probing compare task
+        # ######### evaluate probing distance task
         print('evaluate probing task:')
         loss_total_test = 0
         loss_total_test_random=0
@@ -167,18 +170,19 @@ for fold in range(5):
             loss_dist_random = test_probing_distance_random(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total_test_random += loss_dist_random
             # print('test loss batch '+str(idx)+': '+str(loss_dist))
-        
-        
         print("test loss:", loss_total_test / len(input_lengths))
         print("test loss random:", loss_total_test_random / len(input_lengths))
         print("test time", time_since(time.time() - start))
         print("--------------------------------")
+        ##
+        #################
 
 
         ###########################
         print("training probing task:")
         start = time.time()
         loss_total = 0
+        correct_list_total = []
         correct_total = 0
         for idx in range(len(input_lengths)):
 
@@ -188,12 +192,18 @@ for fold in range(5):
             correct_total += correct_sum
             '''
 
+            '''
             loss_dist = train_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_dist
+            '''
+
+            loss_probing_compare, correct_list_batch = train_probing_opter(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_total += loss_probing_compare
+            correct_list_total += correct_list_batch
         
 
         print("training loss:", loss_total / len(input_lengths))
-        # print("training acc:", float(correct_total) / len(train_pairs))
+        print("training acc:", sum(correct_list_total) / len(correct_list_total))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
         
@@ -204,27 +214,6 @@ for fold in range(5):
             # torch.save(merge.state_dict(), "models/merge")
             # if epoch == n_epochs - 1:
             #     best_acc_fold.append((equation_ac, value_ac, eval_total))
-        
-        # # ######### evaluate probing compare task
-        # print('evaluate probing task:')
-        # loss_total_test = 0
-        # # input_batches 的第一个dim是选择哪一个batch，bs=64的情况下，batch数量是290;
-        # # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
-        # # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
-        # # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
-        # input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
-        # # pdb.set_trace()
-        # start = time.time()
-        
-        # for idx in range(len(input_lengths)):
-        #     loss_dist = test_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
-        #     loss_total_test += loss_dist
-        #     # print('test loss batch '+str(idx)+': '+str(loss_dist))
-        
-        
-        # print("test loss:", loss_total_test / len(input_lengths))
-        # print("test time", time_since(time.time() - start))
-        # print("--------------------------------")
 
 
         '''
@@ -244,6 +233,24 @@ for fold in range(5):
         print('best test acc:', best_test_acc)
         print("--------------------------------")
         '''
+
+        '''
+        ##### evaluate probing_opter()
+        correct_total_test = 0
+        for idx in range(len(input_lengths)):
+            loss_probing_compare, correct_sum_test = test_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
+            loss_total += loss_probing_compare
+            correct_total_test += correct_sum_test
+        
+        
+        if  float(correct_total_test)/len(test_pairs) > best_test_acc:
+            best_test_acc =  float(correct_total_test)/len(test_pairs)
+        print("test loss:", loss_total / len(input_lengths))
+        print("test acc:", float(correct_total_test)/len(test_pairs))
+        print("training time", time_since(time.time() - start))
+        print('best test acc:', best_test_acc)
+        print("--------------------------------")
+        ''''
         
 
 
