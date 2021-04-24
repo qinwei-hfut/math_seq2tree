@@ -1015,7 +1015,7 @@ def train_probing_opter(input_batch, input_length,output_batch, output_length, e
         # loss_batch.append(sum(loss_plm) / len(loss_plm))
         # pdb.set_trace()
         if len(loss_plm) == 0:
-            pdb.set_trace()
+            continue
         loss_batch.append(sum(loss_plm) / len(loss_plm))
     loss = sum(loss_batch) / len(loss_batch)
 
