@@ -1006,9 +1006,9 @@ def train_probing_opter(input_batch, input_length,output_batch, output_length, e
 
                         feature_i = encoder_outputs[num_i_pos][idx].unsqueeze(dim=0)
                         feature_j = encoder_outputs[num_j_pos][idx].unsqueeze(dim=0)
-                        pdb.set_trace()
+                        # pdb.set_trace()
                         logits = probing_opter_module(feature_i,feature_j)
-                        pdb.set_trace()
+                        # pdb.set_trace()
                         _,predict=torch.max(logits,dim=1)
                         correct_list_batch.append(predict==output_lang.word2index[c])
                         loss_plm.append(criterion(logits,output_lang.word2index[c]))
