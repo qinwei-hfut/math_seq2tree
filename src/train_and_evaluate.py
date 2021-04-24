@@ -997,7 +997,8 @@ def train_probing_opter(input_batch, input_length,output_batch, output_length, e
         criterion = torch.nn.CrossEntropyLoss()
 
         loss_plm = []
-        for idx_e, c in enumerate(equation[0:-2]:
+        for idx_e in range(len(equation)-2):
+            c = equation[idx_e]
             if c in output_lang.index2word[0:4]:
                 if equation[idx_e+1] in output_lang.index2word[7:22]:
                     if equation[idx_e+2] in output_lang.index2word[7:22]:
