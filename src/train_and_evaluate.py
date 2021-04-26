@@ -958,6 +958,76 @@ def compute_tree_distance(idx_equation, lang):
     # print(stack.base[0].dist)
     # pdb.set_trace()
 
+'''
+def train_probing_regression(input_batch, input_length,output_batch, output_length, encoder, probing_regression_module, probing_regression_optim,
+               nums_batch, num_pos,output_lang):
+
+    input_var = torch.LongTensor(input_batch).transpose(0, 1)
+    encoder.train()
+    probing_regression_module.train()
+    if USE_CUDA:
+        input_var = input_var.cuda()
+    encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
+    # pdb.set_trace()
+    encoder_outputs = encoder_outputs.detach()
+
+    # 需要每一个样本跑一次；
+    # 如果用来进行train encoder的话，每个样本单独forward会不会有影响呢？
+    # 没有影响的，因为encoder的数据是每个batch一起来的；
+    loss_batch = []
+    correct_list_batch = []
+    for idx in range(len(input_batch)):
+        
+        # print(output_batch[idx])
+        # print(output_length[idx])
+        # 如果公式长度小于2，则过滤此样本；
+        if output_length[idx] < 2:
+            continue
+        
+        stack, equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
+        # # pdb.set_trace()
+        # if len(Num_list) < 2:
+        #     continue
+        if 'UNK' in equation:
+            continue
+        # try:
+        #     dist_dict = stack.base[0].dist
+        # except:
+        #     continue
+
+        criterion = torch.nn.CrossEntropyLoss()
+
+        loss_plm = []
+        for idx_e in range(len(equation)-2):
+            c = equation[idx_e]
+            if c in output_lang.index2word[0:4]:
+                if equation[idx_e+1] in output_lang.index2word[7:22]:
+                    if equation[idx_e+2] in output_lang.index2word[7:22]:
+                        num_i_pos = num_pos[idx][int(equation[idx_e+1].replace('N',''))]
+                        num_j_pos = num_pos[idx][int(equation[idx_e+2].replace('N',''))]
+
+                        feature_i = encoder_outputs[num_i_pos][idx].unsqueeze(dim=0)
+                        feature_j = encoder_outputs[num_j_pos][idx].unsqueeze(dim=0)
+                        # pdb.set_trace()
+                        logits = probing_opter_module(feature_i,feature_j)
+                        # pdb.set_trace()
+                        _,predict=torch.max(logits,dim=1)
+                        # pdb.set_trace()
+                        correct_list_batch.append(predict==output_lang.word2index[c])
+                        loss_plm.append(criterion(logits,torch.tensor(output_lang.word2index[c]).view(1).cuda()))
+        # loss_batch.append(sum(loss_plm) / len(loss_plm))
+        # pdb.set_trace()
+        if len(loss_plm) == 0:
+            continue
+        loss_batch.append(sum(loss_plm) / len(loss_plm))
+    loss = sum(loss_batch) / len(loss_batch)
+
+    probing_opter_optim.zero_grad()
+    loss.backward()
+    probing_opter_optim.step()
+    return loss.item(),correct_list_batch
+'''
+
 def train_probing_opter(input_batch, input_length,output_batch, output_length, encoder, probing_opter_module, probing_opter_optim,
                nums_batch, num_pos,output_lang):
 
@@ -967,7 +1037,7 @@ def train_probing_opter(input_batch, input_length,output_batch, output_length, e
     if USE_CUDA:
         input_var = input_var.cuda()
     encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
-    # pdb.set_trace()
+    pdb.set_trace()
     encoder_outputs = encoder_outputs.detach()
 
     # 需要每一个样本跑一次；
