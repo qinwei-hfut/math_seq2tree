@@ -209,7 +209,7 @@ for fold in range(5):
             '''
 
 
-            loss_probing_compare = train_probing_regression(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_probing_compare = train_probing_regression(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_regression_module, probing_regression_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_probing_compare
         
 
@@ -267,10 +267,10 @@ for fold in range(5):
         loss_total_random = 0
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
         for idx in range(len(input_lengths)):
-            loss_probing_compare = test_probing_regression(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_probing_compare = test_probing_regression(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_regression_module, probing_regression_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_probing_compare
 
-            loss_probing_compare_random = test_probing_regression_random(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_probing_compare_random = test_probing_regression_random(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_regression_module, probing_regression_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total_random += loss_probing_compare_random
         
         
