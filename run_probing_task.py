@@ -210,6 +210,7 @@ for fold in range(5):
 
 
             loss_probing_compare = train_probing_regression(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_regression_module, probing_regression_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            print(loss_probing_compare)
             loss_total += loss_probing_compare
         
 
