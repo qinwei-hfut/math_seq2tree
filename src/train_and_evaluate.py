@@ -989,10 +989,10 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
     criterion = torch.nn.MSELoss()
     for idx in range(len(input_batch)):
         
-        if idx == 1:
-            print(input_batch[idx])
-            print(nums_batch[idx])
-            print(num_pos[idx])
+        # if idx == 1:
+        #     print(input_batch[idx])
+        #     print(nums_batch[idx])
+        #     print(num_pos[idx])
         # print(output_batch[idx][0:output_length[idx]])
   
         for idx_np in range(len(num_pos[idx])):
@@ -1002,9 +1002,9 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
-            if idx == 1:
-                print(pred)
-                print(target)
+            # if idx == 1:
+            #     print(pred)
+            #     print(target)
             loss_np = criterion(pred,target)
             loss_batch.append(loss_np)
 
