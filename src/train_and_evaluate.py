@@ -1002,9 +1002,7 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
-            # if idx == 1:
-            #     print(pred)
-            #     print(target)
+            pdb.set_trace()
             loss_np = criterion(pred,target)
             loss_batch.append(loss_np)
 
@@ -1044,8 +1042,8 @@ def test_probing_regression(input_batch, input_length,output_batch, output_lengt
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
-            print('pred: '+str(pred))
-            print('target: '+str(target))
+            # print('pred: '+str(pred))
+            # print('target: '+str(target))
             loss_np = criterion(pred,target)
             loss_batch.append(loss_np)
 
