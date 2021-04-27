@@ -962,6 +962,7 @@ def compute_tree_distance(idx_equation, lang):
 def train_probing_regression(input_batch, input_length,output_batch, output_length, encoder, probing_regression_module, probing_regression_optim,
                nums_batch, num_pos,output_lang):
 
+    print(output_batch)
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
     encoder.eval()
     probing_regression_module.train()
