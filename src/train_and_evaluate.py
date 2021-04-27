@@ -940,6 +940,16 @@ class Stack(list):
             self.push(temp_opt_result)
 
 
+def NUM_to_float(num):
+    num = num.replace(')','').replace('(','')
+    if num.find('/') != -1:
+        return float(Fraction(num))
+    elif num.find('%') != -1:
+        num = num.replace('%','')
+        return float(num)/100.
+    else:
+        return float(num)
+
 #  先写一个function，可以将该equation中的任何2个num之间的距离求出来；
 #  这是一个数学题级别的计算；不是成batch的
 def compute_tree_distance(idx_equation, lang):
@@ -985,7 +995,7 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
         for idx_np in range(len(num_pos[idx])):
             num_p = num_pos[idx][idx_np]
             print(nums_batch[idx])
-            target = torch.tensor(float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
+            target = torch.tensor(NUM_to_float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
@@ -1024,7 +1034,7 @@ def test_probing_regression(input_batch, input_length,output_batch, output_lengt
   
         for idx_np in range(len(num_pos[idx])):
             num_p = num_pos[idx][idx_np]
-            target = torch.tensor(int(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
+            target = torch.tensor(NUM_to_float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
@@ -1064,7 +1074,7 @@ def test_probing_regression_random(input_batch, input_length,output_batch, outpu
         for idx_np in range(len(num_pos_copy)):
             
             num_p = num_pos_copy[idx_np]
-            target = torch.tensor(int(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
+            target = torch.tensor(NUM_to_float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
@@ -1080,6 +1090,7 @@ def train_probing_opter(input_batch, input_length,output_batch, output_length, e
                nums_batch, num_pos,output_lang):
 
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
+    # TODO
     encoder.train()
     probing_opter_module.train()
     if USE_CUDA:
@@ -1217,6 +1228,7 @@ def train_probing_distance(input_batch, input_length,output_batch, output_length
                nums_batch, num_pos,output_lang):
 
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
+    # TODO
     encoder.train()
     probing_distance_module.train()
     if USE_CUDA:
@@ -1415,6 +1427,7 @@ def train_probing_compare(input_batch, input_length, encoder, probing_compare_mo
     # padding_hidden = torch.FloatTensor([0.0 for _ in range(predict.hidden_size)]).unsqueeze(0)
     # batch_size = len(input_length)
 
+    # TODO
     encoder.train()
     probing_compare_module.train()
     # predict.train()
