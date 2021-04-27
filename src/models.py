@@ -74,7 +74,15 @@ class Probing_Distance_Module(nn.Module):
         sq_dist = outputs.sum()
         return sq_dist
 
+class Probing_Regression_Module(nn.Module):
+    def __init__(self,embedding_size,output_size):
+        super(Probing_Regression_Module,self).__init__()
+        self.decode_layer =  torch.nn.Linear(in_features= embedding_size , out_features=output_size)
 
+    def forward(self, input_x):
+        outputs = self.decode_layer(input_x)
+        return outputs
+        
 
 # EncoderRNN 似乎没有被使用，没有检索到；
 class EncoderRNN(nn.Module):
