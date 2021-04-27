@@ -983,7 +983,7 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
   
         for idx_np in range(len(num_pos[idx])):
             num_p = num_pos[idx][idx_np]
-            target = torch.tensor(int(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
+            target = torch.tensor(float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
