@@ -1002,7 +1002,7 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
-            pdb.set_trace()
+            # pdb.set_trace()
             loss_np = criterion(pred,target)
             loss_batch.append(loss_np)
 
@@ -1011,6 +1011,7 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
 
     probing_regression_optim.zero_grad()
     loss.backward()
+    torch.nn.utils.clip_grad_value_(probing_regression_module.parameters(),clip_value=1.1)
     probing_regression_optim.step()
     return loss.item()
 
