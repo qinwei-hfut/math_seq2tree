@@ -75,9 +75,19 @@ class Probing_Distance_Module(nn.Module):
         return sq_dist
 
 class Probing_Regression_Module(nn.Module):
-    def __init__(self,embedding_size,output_size):
+    def __init__(self,embedding_size,hidden_dim,linear=True):
         super(Probing_Regression_Module,self).__init__()
-        self.decode_layer =  torch.nn.Linear(in_features= embedding_size , out_features=output_size)
+        if linear:
+            self.decode_layer =  torch.nn.Linear(in_features= embedding_size , out_features=1)
+        else:
+            self.decode_layer = torch.nn.Sequential(torch.nn.Linear(in_features=embedding_size,
+                                                                    out_features=hidden_dim),
+                                                    torch.nn.ReLU(),
+                                                    torch.nn.Linear(in_features=hidden_dim,
+                                                                    out_features=hidden_dim),
+                                                    torch.nn.ReLU(),
+                                                    torch.nn.Linear(in_features=hidden_dim,
+                                                                    out_features=1))
 
     def forward(self, input_x):
         outputs = self.decode_layer(input_x)

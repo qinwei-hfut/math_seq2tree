@@ -69,7 +69,7 @@ for fold in range(5):
     probing_compare_module = Probing_Compare_Module(embedding_size=hidden_size,hidden_size= 200,linear=False,cat=True)
     probing_distance_module = Probing_Distance_Module(embedding_size=hidden_size,hidden_size=256)
     probing_opter_module = Probing_Opter_Module(embedding_size=hidden_size,hidden_size= 200,linear=False,cat=True)
-    probing_regression_module = Probing_Regression_Module(embedding_size=hidden_size,output_size=1)
+    probing_regression_module = Probing_Regression_Module(embedding_size=hidden_size,hidden_dim=200,linear=False)
     # the embedding layer is  only for generated number embeddings, operators, and paddings
 
     # encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
