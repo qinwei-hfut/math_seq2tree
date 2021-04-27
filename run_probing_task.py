@@ -264,7 +264,8 @@ for fold in range(5):
         print('evaluate probing regression task:')
         start = time.time()
         correct_total_total_test = []
-        loss_total_random = 0
+        loss_total_random = []
+        loss_total = []
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
         for idx in range(len(input_lengths)):
             loss_probing_compare = test_probing_regression(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_regression_module, probing_regression_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
@@ -276,8 +277,8 @@ for fold in range(5):
         
         # if  float(correct_total_test)/len(test_pairs) > best_test_acc:
         #     best_test_acc =  float(correct_total_test)/len(test_pairs)
-        print("test loss:", loss_total / len(input_lengths))
-        print("test loss random:", loss_total_random / len(input_lengths))
+        print("test loss:", sum(loss_total) / len(loss_total))
+        print("test loss random:", sum(loss_total_random) / len(loss_total_random))
         print("test time", time_since(time.time() - start))
         print("--------------------------------")
         
