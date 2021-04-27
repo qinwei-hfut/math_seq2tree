@@ -1044,6 +1044,9 @@ def test_probing_regression(input_batch, input_length,output_batch, output_lengt
             target = torch.tensor(NUM_to_float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
+            if target.item() > 10. or target.item() < -10:
+                continue
+
             pred = probing_regression_module(input_x)
             # print('pred: '+str(pred))
             # print('target: '+str(target))
@@ -1085,6 +1088,9 @@ def test_probing_regression_random(input_batch, input_length,output_batch, outpu
             num_p = num_pos_copy[idx_np]
             target = torch.tensor(NUM_to_float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
+
+            if target.item() > 10. or target.item() < -10:
+                continue
 
             pred = probing_regression_module(input_x)
             loss_np = criterion(pred,target)
