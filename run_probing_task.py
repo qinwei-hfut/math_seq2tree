@@ -79,7 +79,7 @@ for fold in range(5):
     probing_compare_optim = torch.optim.SGD(probing_compare_module.parameters(), lr=0.01, momentum=0.5)
     probing_distance_optim = torch.optim.SGD(probing_distance_module.parameters(), lr=0.001, momentum=0.5)
     probing_opter_optim = torch.optim.SGD(probing_opter_module.parameters(), lr=0.001, momentum=0.5)
-    probing_regression_optim = torch.optim.SGD(probing_regression_module.parameters(), lr=0.001, momentum=0.5)
+    probing_regression_optim = torch.optim.SGD(probing_regression_module.parameters(), lr=0.01, momentum=0.5)
 
     # encoder_scheduler = torch.optim.lr_scheduler.StepLR(encoder_optimizer, step_size=20, gamma=0.5)
     # predict_scheduler = torch.optim.lr_scheduler.StepLR(predict_optimizer, step_size=20, gamma=0.5)
