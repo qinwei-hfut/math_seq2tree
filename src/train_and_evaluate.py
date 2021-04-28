@@ -1013,7 +1013,7 @@ def train_probing_type(input_batch, input_length,output_batch, output_length, en
             pred = probing_type_module(input_x)
             # pdb.set_trace()
             loss_np = criterion(pred,target)
-            correct_list_batch.append(torch.max(pred,1)[1]==target)
+            correct_list_batch.append((torch.max(pred,1)[1]==target).item())
             loss_batch.append(loss_np)
 
         
@@ -1067,7 +1067,7 @@ def test_probing_type(input_batch, input_length,output_batch, output_length, enc
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_type_module(input_x)
-            correct_list_batch.append(torch.max(pred,1)[1]==target)
+            correct_list_batch.append((torch.max(pred,1)[1]==target).item())
             # pdb.set_trace()
             loss_np = criterion(pred,target)
             loss_batch.append(loss_np)
