@@ -994,13 +994,21 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
         #     print(nums_batch[idx])
         #     print(num_pos[idx])
         # print(output_batch[idx][0:output_length[idx]])
+
+        FLAG = False
+        for num in nums_batch[idx]:
+            if NUM_to_float(num) > 10.0 or  NUM_to_float(num)<-10.0:
+                FLAG = True
+        if FLAG:
+            continue
+
   
         for idx_np in range(len(num_pos[idx])):
             num_p = num_pos[idx][idx_np]
             # print(nums_batch[idx])
             target = torch.tensor(NUM_to_float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0).unsqueeze(dim=0)
-            if target.item() > 10. or target.item() < -10:
-                continue
+            # if target.item() > 10. or target.item() < -10:
+            #     continue
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_regression_module(input_x)
@@ -1038,14 +1046,21 @@ def test_probing_regression(input_batch, input_length,output_batch, output_lengt
         
         # print(output_batch[idx])
         # print(output_length[idx])
+
+        FLAG = False
+        for num in nums_batch[idx]:
+            if NUM_to_float(num) > 10.0 or  NUM_to_float(num)<-10.0:
+                FLAG = True
+        if FLAG:
+            continue
   
         for idx_np in range(len(num_pos[idx])):
             num_p = num_pos[idx][idx_np]
             target = torch.tensor(NUM_to_float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
-            if target.item() > 10. or target.item() < -10:
-                continue
+            # if target.item() > 10. or target.item() < -10:
+            #     continue
 
             pred = probing_regression_module(input_x)
             # print('pred: '+str(pred))
@@ -1080,6 +1095,13 @@ def test_probing_regression_random(input_batch, input_length,output_batch, outpu
         
         # print(output_batch[idx])
         # print(output_length[idx])
+
+        FLAG = False
+        for num in nums_batch[idx]:
+            if NUM_to_float(num) > 10.0 or  NUM_to_float(num)<-10.0:
+                FLAG = True
+        if FLAG:
+            continue
   
         num_pos_copy = num_pos[idx].copy()
         random.shuffle(num_pos_copy)
@@ -1089,8 +1111,8 @@ def test_probing_regression_random(input_batch, input_length,output_batch, outpu
             target = torch.tensor(NUM_to_float(nums_batch[idx][idx_np]),device='cuda').unsqueeze(dim=0)
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
-            if target.item() > 10. or target.item() < -10:
-                continue
+            # if target.item() > 10. or target.item() < -10:
+            #     continue
 
             pred = probing_regression_module(input_x)
             loss_np = criterion(pred,target)
