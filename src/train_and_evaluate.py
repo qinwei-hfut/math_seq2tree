@@ -1011,7 +1011,7 @@ def train_probing_type(input_batch, input_length,output_batch, output_length, en
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_type_module(input_x)
-            # pdb.set_trace()
+            pdb.set_trace()
             loss_np = criterion(pred,target)
             correct_list_batch.append(pred==target)
             loss_batch.append(loss_np)
