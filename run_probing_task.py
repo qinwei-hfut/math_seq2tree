@@ -224,7 +224,7 @@ for fold in range(5):
             correct_list_total += correct_list_batch
         
 
-        pdb.set_trace()
+        # pdb.set_trace()
         print("training loss:", loss_total / len(input_lengths))
         print("training acc:", sum(correct_list_total) / len(correct_list_total))
         print("training time", time_since(time.time() - start))
