@@ -997,7 +997,7 @@ def train_probing_regression(input_batch, input_length,output_batch, output_leng
 
         FLAG = False
         for num in nums_batch[idx]:
-            if NUM_to_float(num) > 50.0 or  NUM_to_float(num)<-50.0:
+            if NUM_to_float(num) > 100.0 or  NUM_to_float(num)<-100.0:
                 FLAG = True
         if FLAG:
             continue
@@ -1049,7 +1049,7 @@ def test_probing_regression(input_batch, input_length,output_batch, output_lengt
 
         FLAG = False
         for num in nums_batch[idx]:
-            if NUM_to_float(num) > 50.0 or  NUM_to_float(num)<-50.0:
+            if NUM_to_float(num) > 100.0 or  NUM_to_float(num)<-100.0:
                 FLAG = True
         if FLAG:
             continue
@@ -1098,7 +1098,7 @@ def test_probing_regression_random(input_batch, input_length,output_batch, outpu
 
         FLAG = False
         for num in nums_batch[idx]:
-            if NUM_to_float(num) > 50.0 or  NUM_to_float(num)<-50.0:
+            if NUM_to_float(num) > 100.0 or  NUM_to_float(num)<-100.0:
                 FLAG = True
         if FLAG:
             continue
