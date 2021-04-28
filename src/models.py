@@ -94,6 +94,25 @@ class Probing_Regression_Module(nn.Module):
         return outputs
         
 
+class Probing_Type_Module(nn.Module):
+    def __init__(self,embedding_size,hidden_dim,linear=True):
+        super(Probing_Type_Module,self).__init__()
+        if linear:
+            self.decode_layer =  torch.nn.Linear(in_features= embedding_size , out_features=4)
+        else:
+            self.decode_layer = torch.nn.Sequential(torch.nn.Linear(in_features=embedding_size,
+                                                                    out_features=hidden_dim),
+                                                    torch.nn.ReLU(),
+                                                    torch.nn.Linear(in_features=hidden_dim,
+                                                                    out_features=hidden_dim),
+                                                    torch.nn.ReLU(),
+                                                    torch.nn.Linear(in_features=hidden_dim,
+                                                                    out_features=4))
+
+    def forward(self, input_x):
+        outputs = self.decode_layer(input_x)
+        return outputs
+
 # EncoderRNN 似乎没有被使用，没有检索到；
 class EncoderRNN(nn.Module):
     def __init__(self, input_size, embedding_size, hidden_size, n_layers=2, dropout=0.5):
