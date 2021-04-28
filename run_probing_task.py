@@ -70,6 +70,7 @@ for fold in range(5):
     probing_distance_module = Probing_Distance_Module(embedding_size=hidden_size,hidden_size=256)
     probing_opter_module = Probing_Opter_Module(embedding_size=hidden_size,hidden_size= 200,linear=False,cat=True)
     probing_regression_module = Probing_Regression_Module(embedding_size=hidden_size,hidden_dim=200,linear=False)
+    probing_type_module = Probing_Type_Module(embedding_size=hidden_size,hidden_dim=200,linear=True)
     # the embedding layer is  only for generated number embeddings, operators, and paddings
 
     # encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
@@ -80,6 +81,7 @@ for fold in range(5):
     probing_distance_optim = torch.optim.SGD(probing_distance_module.parameters(), lr=0.001, momentum=0.5)
     probing_opter_optim = torch.optim.SGD(probing_opter_module.parameters(), lr=0.001, momentum=0.5)
     probing_regression_optim = torch.optim.SGD(probing_regression_module.parameters(), lr=0.01, momentum=0.5)
+    probing_type_optim = torch.optim.SGD(probing_type_module.parameters(), lr=0.01, momentum=0.5)
 
     # encoder_scheduler = torch.optim.lr_scheduler.StepLR(encoder_optimizer, step_size=20, gamma=0.5)
     # predict_scheduler = torch.optim.lr_scheduler.StepLR(predict_optimizer, step_size=20, gamma=0.5)
@@ -90,6 +92,7 @@ for fold in range(5):
     probing_distance_scheduler = torch.optim.lr_scheduler.StepLR(probing_distance_optim, step_size=20,gamma=0.5)
     probing_opter_scheduler = torch.optim.lr_scheduler.StepLR(probing_opter_optim, step_size=20,gamma=0.5)
     probing_regression_scheduler = torch.optim.lr_scheduler.StepLR(probing_regression_optim,step_size=20,gamma=0.5)
+    probing_type_scheduler = torch.optim.lr_scheduler.StepLR(probing_type_optim,step_size=20,gamma=0.5)
 
     # Move models to GPU
     if USE_CUDA:
@@ -101,6 +104,7 @@ for fold in range(5):
         probing_distance_module.cuda()
         probing_opter_module.cuda()
         probing_regression_module.cuda()
+        probing_type_module.cuda()
 
     generate_num_ids = []
     for num in generate_nums:
@@ -209,14 +213,20 @@ for fold in range(5):
             '''
 
 
-            loss_probing_compare = train_probing_regression(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_regression_module, probing_regression_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            # loss_probing_compare = train_probing_regression(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_regression_module, probing_regression_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            # # print(loss_probing_compare)
+            # loss_total += loss_probing_compare
+            
+
+            loss_probing_compare,correct_list_batch = train_probing_type(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             # print(loss_probing_compare)
             loss_total += loss_probing_compare
+            correct_list_total += correct_list_batch
         
 
         # pdb.set_trace()
         print("training loss:", loss_total / len(input_lengths))
-        # print("training acc:", sum(correct_list_total).item() / len(correct_list_total))
+        print("training acc:", sum(correct_list_total).item() / len(correct_list_total))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
         
@@ -261,7 +271,8 @@ for fold in range(5):
         '''
 
 
-        ##### evaluate probing_opter()
+        '''
+        ##### evaluate probing regression()
         print('evaluate probing regression task:')
         start = time.time()
         correct_total_total_test = []
@@ -280,6 +291,30 @@ for fold in range(5):
         #     best_test_acc =  float(correct_total_test)/len(test_pairs)
         print("test loss:", sum(loss_total) / len(loss_total))
         print("test loss random:", sum(loss_total_random) / len(loss_total_random))
+        print("test time", time_since(time.time() - start))
+        print("--------------------------------")
+        '''
+
+        ##### evaluate probing type
+        print('evaluate probing type:')
+        start = time.time()
+        correct_total_total_test = []
+        loss_total_random = []
+        loss_total = []
+        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
+        for idx in range(len(input_lengths)):
+
+            loss_probing_type, correct_list_batch = test_probing_type(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_total.append(loss_probing_type)
+            correct_total_total_test += correct_list_batch
+
+            
+        
+        
+        # if  float(correct_total_test)/len(test_pairs) > best_test_acc:
+        #     best_test_acc =  float(correct_total_test)/len(test_pairs)
+        print("test loss:", sum(loss_total) / len(loss_total))
+        print("test acc:", sum(correct_total_total_test).item() / len(correct_total_total_test))
         print("test time", time_since(time.time() - start))
         print("--------------------------------")
         

@@ -989,6 +989,7 @@ def train_probing_type(input_batch, input_length,output_batch, output_length, en
     # 如果用来进行train encoder的话，每个样本单独forward会不会有影响呢？
     # 没有影响的，因为encoder的数据是每个batch一起来的；
     loss_batch = []
+    correct_list_batch = []
     criterion = torch.nn.CrossEntropyLoss()
     for idx in range(len(input_batch)):
 
@@ -1012,6 +1013,7 @@ def train_probing_type(input_batch, input_length,output_batch, output_length, en
             pred = probing_type_module(input_x)
             # pdb.set_trace()
             loss_np = criterion(pred,target)
+            correct_list_batch.append(pred==target)
             loss_batch.append(loss_np)
 
         
@@ -1021,7 +1023,7 @@ def train_probing_type(input_batch, input_length,output_batch, output_length, en
     loss.backward()
     # torch.nn.utils.clip_grad_value_(probing_regression_module.parameters(),clip_value=1.1)
     probing_type_optim.step()
-    return loss.item()
+    return loss.item(),correct_list_batch
 
 def test_probing_type(input_batch, input_length,output_batch, output_length, encoder, probing_type_module, probing_type_optim,
                nums_batch, num_pos,output_lang):
@@ -1043,6 +1045,7 @@ def test_probing_type(input_batch, input_length,output_batch, output_length, enc
     # 如果用来进行train encoder的话，每个样本单独forward会不会有影响呢？
     # 没有影响的，因为encoder的数据是每个batch一起来的；
     loss_batch = []
+    correct_list_batch = []
     criterion = torch.nn.CrossEntropyLoss()
     for idx in range(len(input_batch)):
 
@@ -1064,6 +1067,7 @@ def test_probing_type(input_batch, input_length,output_batch, output_length, enc
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_type_module(input_x)
+            correct_list_batch.append(pred==target)
             # pdb.set_trace()
             loss_np = criterion(pred,target)
             loss_batch.append(loss_np)
@@ -1071,7 +1075,7 @@ def test_probing_type(input_batch, input_length,output_batch, output_length, enc
         
     loss = sum(loss_batch) / len(loss_batch)
 
-    return loss.item()
+    return loss.item(),correct_list_batch
 
 def train_probing_regression(input_batch, input_length,output_batch, output_length, encoder, probing_regression_module, probing_regression_optim,
                nums_batch, num_pos,output_lang):
