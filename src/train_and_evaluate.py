@@ -999,13 +999,13 @@ def train_probing_type(input_batch, input_length,output_batch, output_length, en
             # print(nums_batch[idx])
 
             if '%' in nums_batch[idx][idx_np]:
-                target = torch.tensor(0, device='cuda').unsqueeze(dim=1)
+                target = torch.tensor(0, device='cuda').unsqueeze(dim=0)
             elif '/' in nums_batch[idx][idx_np]:
-                target = torch.tensor(1, device='cuda').unsqueeze(dim=1)
-            elif '.' in num_batch[idx][idx_np]:
-                target = torch.tensor(2, device='cuda').unsqueeze(dim=1)
+                target = torch.tensor(1, device='cuda').unsqueeze(dim=0)
+            elif '.' in nums_batch[idx][idx_np]:
+                target = torch.tensor(2, device='cuda').unsqueeze(dim=0)
             else:
-                target = torch.tensor(3, device='cuda').unsqueeze(dim=1)
+                target = torch.tensor(3, device='cuda').unsqueeze(dim=0)
             # if target.item() > 10. or target.item() < -10:
             #     continue
             input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
