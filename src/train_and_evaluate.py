@@ -1058,7 +1058,7 @@ def test_probing_type(input_batch, input_length,output_batch, output_length, enc
                 target = torch.tensor(0, device='cuda').unsqueeze(dim=1)
             elif '/' in nums_batch[idx][idx_np]:
                 target = torch.tensor(1, device='cuda').unsqueeze(dim=1)
-            elif '.' in num_batch[idx][idx_np]:
+            elif '.' in nums_batch[idx][idx_np]:
                 target = torch.tensor(2, device='cuda').unsqueeze(dim=1)
             else:
                 target = torch.tensor(3, device='cuda').unsqueeze(dim=1)
