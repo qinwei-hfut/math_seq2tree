@@ -974,7 +974,7 @@ def train_probing_type(input_batch, input_length,output_batch, output_length, en
 
     # print(nums_batch)
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
-    encoder.train()
+    encoder.eval()
     probing_type_module.train()
     if USE_CUDA:
         input_var = input_var.cuda()
