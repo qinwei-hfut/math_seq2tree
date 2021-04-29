@@ -990,7 +990,7 @@ def number_n_gram_word(pairs, n_gram=3):
     # 统计每个词语附近num的数量，num的平均值，num的类型分布；
     word_value_dict = {}       # 这个dict，key是关键词，value是一个dict，
                                # 里面这个dict中，key是统计的类型，value是对应的大小； 
-    for k,v_list in word_number_list:
+    for k,v_list in word_number_list.items():
         if k not in word_value_dict:
             word_value_dict[k] = {'len':len(v_list)}
         total_count = 0.
