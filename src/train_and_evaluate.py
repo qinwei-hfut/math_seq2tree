@@ -981,6 +981,8 @@ def number_n_gram_word(pairs, n_gram=3):
             for i in range(num_pos-n_gram,num_pos+n_gram+1):
                 if i == num_pos:
                     continue
+                if i >= len(p1[i]):
+                    continue
                 if p1[i] not in word_number_list:
                     word_number_list[p1[i]] = []
                 word_number_list[p1[i]].append(num)
