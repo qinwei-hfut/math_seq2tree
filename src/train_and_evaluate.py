@@ -1018,7 +1018,10 @@ def number_n_gram_word(pairs, n_gram=3):
         word_value_dict[k]['perc'] = percentage_count / word_value_dict[k]['len']
         word_value_dict[k]['float'] = float_count / word_value_dict[k]['len']
         word_value_dict[k]['int'] = int_count / word_value_dict[k]['len']
-    pdb.set_trace() 
+    for k,v in word_value_dict.items():
+        if v['len'] >= 10:
+            print(k,v)
+    pdb.set_trace()
     return 
         
 
