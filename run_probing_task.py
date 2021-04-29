@@ -299,20 +299,27 @@ for fold in range(5):
         print('evaluate probing type:')
         start = time.time()
         correct_total_total_test = []
+        correct_total_list_opter = [[],[],[],[]]
         loss_total_random = []
         loss_total = []
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
         for idx in range(len(input_lengths)):
 
-            loss_probing_type, correct_list_batch = test_probing_type(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_probing_type, correct_list_batch,correct_list_opter = test_probing_type(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total.append(loss_probing_type)
             correct_total_total_test += correct_list_batch
+            for i in range(len(correct_list_opter)):
+                correct_total_list_opter[i] += correct_list_opter[i]
+
 
             
         
         
         # if  float(correct_total_test)/len(test_pairs) > best_test_acc:
         #     best_test_acc =  float(correct_total_test)/len(test_pairs)
+        test_acc = ['percentage', 'fraction', 'float', 'int']
+        for i in range(len(correct_total_list_opter)):
+            print(test_acc[i]+': ', sum(correct_total_list_opter[i])/len(correct_total_list_opter))
         print("test loss:", sum(loss_total) / len(loss_total))
         print("test acc:", sum(correct_total_total_test) / len(correct_total_total_test))
         print("test time", time_since(time.time() - start))

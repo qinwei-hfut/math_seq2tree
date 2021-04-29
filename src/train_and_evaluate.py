@@ -1047,6 +1047,7 @@ def test_probing_type(input_batch, input_length,output_batch, output_length, enc
     loss_batch = []
     correct_list_batch = []
     criterion = torch.nn.CrossEntropyLoss()
+    correct_list_opter = [[],[],[],[]]   # 统计每个类别的正确率
     for idx in range(len(input_batch)):
 
   
@@ -1068,6 +1069,8 @@ def test_probing_type(input_batch, input_length,output_batch, output_length, enc
 
             pred = probing_type_module(input_x)
             correct_list_batch.append((torch.max(pred,1)[1]==target).item())
+            correct_list_opter[target.item()].append((torch.max(pred,1)[1]==target).item())
+            
             # pdb.set_trace()
             loss_np = criterion(pred,target)
             loss_batch.append(loss_np)
@@ -1075,7 +1078,7 @@ def test_probing_type(input_batch, input_length,output_batch, output_length, enc
         
     loss = sum(loss_batch) / len(loss_batch)
 
-    return loss.item(),correct_list_batch
+    return loss.item(),correct_list_batch, correct_list_opter
 
 def train_probing_regression(input_batch, input_length,output_batch, output_length, encoder, probing_regression_module, probing_regression_optim,
                nums_batch, num_pos,output_lang):
