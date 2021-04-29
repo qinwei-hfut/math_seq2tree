@@ -11,6 +11,7 @@ import torch.nn.functional as f
 import time
 import random
 from fractions import Fraction
+import json
 
 MAX_OUTPUT_LENGTH = 45
 MAX_INPUT_LENGTH = 120
@@ -1021,6 +1022,8 @@ def number_n_gram_word(pairs, n_gram=3):
     for k,v in word_value_dict.items():
         if v['len'] >= 10:
             print(k,v)
+    with open('dict.json','a') as f:
+        json.dump(word_value_dict,f,ensure_ascii=False,encoding='utf-8')
     pdb.set_trace()
     return 
         
