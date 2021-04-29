@@ -25,9 +25,10 @@ temp_pairs = []
 for p in pairs:
     # 将equation的表达换成了前缀表达；
     temp_pairs.append((p[0], from_infix_to_prefix(p[1]), p[2], p[3]))
+pdb.set_trace()
 pairs = temp_pairs
 
-pdb.set_trace()
+
 
 fold_size = int(len(pairs) * 0.2)
 fold_pairs = []
