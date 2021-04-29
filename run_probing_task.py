@@ -319,7 +319,7 @@ for fold in range(5):
         #     best_test_acc =  float(correct_total_test)/len(test_pairs)
         test_acc = ['percentage', 'fraction', 'float', 'int']
         for i in range(len(correct_total_list_opter)):
-            print(test_acc[i]+': ', sum(correct_total_list_opter[i])/len(correct_total_list_opter))
+            print(test_acc[i]+': ', sum(correct_total_list_opter[i])/len(correct_total_list_opter[i]))
         print("test loss:", sum(loss_total) / len(loss_total))
         print("test acc:", sum(correct_total_total_test) / len(correct_total_total_test))
         print("test time", time_since(time.time() - start))
