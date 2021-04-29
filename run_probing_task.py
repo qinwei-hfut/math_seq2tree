@@ -21,11 +21,13 @@ data = load_raw_data("data/Math_23K.json")
 
 pairs, generate_nums, copy_nums = transfer_num(data)
 
+
+number_n_gram_word(pairs,n_gram=3)
 temp_pairs = []
 for p in pairs:
     # 将equation的表达换成了前缀表达；
     temp_pairs.append((p[0], from_infix_to_prefix(p[1]), p[2], p[3]))
-pdb.set_trace()
+# pdb.set_trace()
 pairs = temp_pairs
 
 

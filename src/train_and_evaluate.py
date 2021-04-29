@@ -968,6 +968,58 @@ def compute_tree_distance(idx_equation, lang):
     # print(stack.base[0].dist)
     # pdb.set_trace()
 
+def number_n_gram_word(pairs, n_gram=3):
+    word_number_list = {}   # key 应该是词语，value是一个list，包含了经历过的num
+    for p1, p2, p3, p4 in pairs:
+        for idx in range(len(p4)):
+            num_pos = p4[idx]
+            # num = NUM_to_float(p3[idx])
+            num = p3[idx]
+            # if num not in word_number_list:
+            #     word_number_list[num] = []
+            
+            for i in range(num_pos-n_gram,num_pos+n_gram+1):
+                if i == num_pos:
+                    continue
+                if p1[i] not in word_number_list:
+                    word_number_list[p1[i]] = []
+                word_number_list[p1[i]].append(num)
+    
+    # 统计每个词语附近num的数量，num的平均值，num的类型分布；
+    word_value_dict = {}       # 这个dict，key是关键词，value是一个dict，
+                               # 里面这个dict中，key是统计的类型，value是对应的大小； 
+    for k,v_list in word_number_list:
+        if k not in word_value_dict:
+            word_value_dict[k] = {'len':len(v_list)}
+        total_count = 0.
+        fraction_count = 0.
+        percentage_count = 0.
+        float_count = 0.
+        int_count = 0.
+        for v in v_list:
+            v = v.replace(')','').replace('(','')
+            if v.find('/') != -1:
+                fraction_count += 1
+                total_count += float(Fraction(v))
+            elif v.find('%') != -1:
+                percentage_count += 1
+                v = v.replace('%','')
+                total_count += float(v)/100.
+            elif v.find('.') != -1:
+                float_count += 1
+                total_count += float(v)
+            else:
+                int_count += 1
+                total_count += float(v)
+        word_value_dict[k]['avg'] = total_count /  word_value_dict[k]['len']
+        word_value_dict[k]['frac'] = fraction_count / word_value_dict[k]['len']
+        word_value_dict[k]['perc'] = percentage_count / word_value_dict[k]['len']
+        word_value_dict[k]['float'] = float_count / word_value_dict[k]['len']
+        word_value_dict[k]['int'] = int_count / word_value_dict[k]['len']
+    pdb.set_trace() 
+    return 
+        
+
 
 def train_probing_type(input_batch, input_length,output_batch, output_length, encoder, probing_type_module, probing_type_optim,
                nums_batch, num_pos,output_lang):
