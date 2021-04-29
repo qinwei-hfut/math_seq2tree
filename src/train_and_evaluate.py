@@ -1023,7 +1023,7 @@ def number_n_gram_word(pairs, n_gram=3):
         if v['len'] >= 10:
             print(k,v)
     with open('dict.json','a') as f:
-        json.dump(word_value_dict,f,ensure_ascii=False,encoding='utf-8')
+        json.dump(word_value_dict,f,ensure_ascii=False)
     pdb.set_trace()
     return 
         
