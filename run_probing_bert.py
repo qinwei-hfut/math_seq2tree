@@ -59,7 +59,7 @@ for fold in range(5):
     input_lang, output_lang, train_pairs, test_pairs = prepare_data(pairs_trained, pairs_tested, 5, generate_nums,
                                                                     copy_nums, tree=True)
     
-    train_pairs, test_pairs = prepare_data_for_bert(train_pairs, test_pairs)
+    train_pairs, test_pairs = prepare_data_for_bert(pairs_trained, pairs_tested)
     pdb.set_trace()
     # Initialize models
     encoder = EncoderSeq(input_size=input_lang.n_words, embedding_size=embedding_size, hidden_size=hidden_size,
