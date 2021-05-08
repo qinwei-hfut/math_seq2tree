@@ -22,7 +22,7 @@ data = load_raw_data("data/Math_23K.json")
 pairs, generate_nums, copy_nums = transfer_num(data)
 
 
-number_n_gram_word(pairs,n_gram=3)
+# number_n_gram_word(pairs,n_gram=3)
 temp_pairs = []
 for p in pairs:
     # 将equation的表达换成了前缀表达；
@@ -58,7 +58,7 @@ for fold in range(5):
 
     input_lang, output_lang, train_pairs, test_pairs = prepare_data(pairs_trained, pairs_tested, 5, generate_nums,
                                                                     copy_nums, tree=True)
-    pdb.set_trace()
+    # pdb.set_trace()
     # Initialize models
     encoder = EncoderSeq(input_size=input_lang.n_words, embedding_size=embedding_size, hidden_size=hidden_size,
                          n_layers=n_layers)
@@ -157,7 +157,8 @@ for fold in range(5):
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
         # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(train_pairs, batch_size)
-        # pdb.set_trace()
+        input_batches_, input_lengths_, output_batches_, output_lengths_, nums_batches_, num_pos_batches_, num_size_batches_ =prepare_train_batch_text(pairs_trained,batch_size)
+        pdb.set_trace()
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
 

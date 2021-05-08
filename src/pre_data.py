@@ -831,6 +831,61 @@ def pad_seq(seq, seq_len, max_length):
 
 
 # prepare the batches
+def prepare_train_batch_text(pairs_to_batch, batch_size):
+    pairs = copy.deepcopy(pairs_to_batch)
+    random.shuffle(pairs)  # shuffle the pairs
+    pos = 0
+    input_lengths = []
+    output_lengths = []
+    nums_batches = []
+    batches = []
+    input_batches = []
+    output_batches = []
+    num_stack_batches = []  # save the num stack which
+    num_pos_batches = []
+    num_size_batches = []
+
+    # 将所有的pairs按照batch size拆分成batch
+    while pos + batch_size < len(pairs):
+        batches.append(pairs[pos:pos+batch_size])
+        pos += batch_size
+    batches.append(pairs[pos:])
+
+    for batch in batches:
+        # 每个batch内部，根据input length排序
+        batch = sorted(batch, key=lambda tp: len(tp[0]), reverse=True)
+        input_length = []
+        output_length = []
+        for q, t, num, pos in batch:
+            input_length.append(len(q))
+            output_length.append(len(t))
+        input_lengths.append(input_length)
+        output_lengths.append(output_length)
+        input_len_max = input_length[0]
+        output_len_max = max(output_length)
+        input_batch = []
+        output_batch = []
+        num_batch = []
+        num_stack_batch = []
+        num_pos_batch = []
+        num_size_batch = []
+        for qt, et, num, num_pos in batch:
+            # num_batch.append(len(num))
+            num_batch.append(num)
+            input_batch.append(qt)
+            output_batch.append(et)
+            # num_stack_batch.append(num_stack)
+            num_pos_batch.append(num_pos)
+            num_size_batch.append(len(num_pos))
+        input_batches.append(input_batch)
+        nums_batches.append(num_batch)
+        output_batches.append(output_batch)
+        # num_stack_batches.append(num_stack_batch)
+        num_pos_batches.append(num_pos_batch)
+        num_size_batches.append(num_size_batch)
+    return input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_pos_batches, num_size_batches
+
+# prepare the batches
 def prepare_train_batch(pairs_to_batch, batch_size):
     pairs = copy.deepcopy(pairs_to_batch)
     random.shuffle(pairs)  # shuffle the pairs
