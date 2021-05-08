@@ -222,7 +222,7 @@ for fold in range(5):
             # loss_total += loss_probing_compare
             
 
-            loss_probing_compare,correct_list_batch = train_probing_type(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_probing_compare,correct_list_batch = train_probing_type_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             # print(loss_probing_compare)
             loss_total += loss_probing_compare
             correct_list_total += correct_list_batch

@@ -1028,6 +1028,62 @@ def number_n_gram_word(pairs, n_gram=3):
     return 
         
 
+def train_probing_type_bert(input_batch, input_length,output_batch, output_length, encoder, probing_type_module, probing_type_optim,
+               nums_batch, num_pos,output_lang):
+
+    # print(nums_batch)
+    pdb.set_trace()
+    input_var = torch.LongTensor(input_batch).transpose(0, 1)
+    encoder.eval()
+    probing_type_module.train()
+    if USE_CUDA:
+        input_var = input_var.cuda()
+    encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
+    # pdb.set_trace()
+    encoder_outputs =  encoder_outputs.detach()
+
+
+    # 进行数字的类别分类；float；int;分数；百分数；
+
+    # 需要每一个样本跑一次；
+    # 如果用来进行train encoder的话，每个样本单独forward会不会有影响呢？
+    # 没有影响的，因为encoder的数据是每个batch一起来的；
+    loss_batch = []
+    correct_list_batch = []
+    criterion = torch.nn.CrossEntropyLoss()
+    for idx in range(len(input_batch)):
+
+  
+        for idx_np in range(len(num_pos[idx])):
+            num_p = num_pos[idx][idx_np]
+            # print(nums_batch[idx])
+
+            if '%' in nums_batch[idx][idx_np]:
+                target = torch.tensor(0, device='cuda').unsqueeze(dim=0)
+            elif '/' in nums_batch[idx][idx_np]:
+                target = torch.tensor(1, device='cuda').unsqueeze(dim=0)
+            elif '.' in nums_batch[idx][idx_np]:
+                target = torch.tensor(2, device='cuda').unsqueeze(dim=0)
+            else:
+                target = torch.tensor(3, device='cuda').unsqueeze(dim=0)
+            # if target.item() > 10. or target.item() < -10:
+            #     continue
+            input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
+
+            pred = probing_type_module(input_x)
+            # pdb.set_trace()
+            loss_np = criterion(pred,target)
+            correct_list_batch.append((torch.max(pred,1)[1]==target).item())
+            loss_batch.append(loss_np)
+
+        
+    loss = sum(loss_batch) / len(loss_batch)
+
+    probing_type_optim.zero_grad()
+    loss.backward()
+    # torch.nn.utils.clip_grad_value_(probing_regression_module.parameters(),clip_value=1.1)
+    probing_type_optim.step()
+    return loss.item(),correct_list_batch
 
 def train_probing_type(input_batch, input_length,output_batch, output_length, encoder, probing_type_module, probing_type_optim,
                nums_batch, num_pos,output_lang):
