@@ -8,7 +8,7 @@ model = BertModel.from_pretrained(pretrained)
 
 # outputs.last_hidden_state
 while True:
-    input_text = "第一天挖了316方，连续挖了NUM天，一周共挖土，多少方？"
+    input_text = "第一天挖了NUM方，连续挖了NUM天，一周共挖土，多少方？"
     # input_text = "第一天挖了NUM方"
     # pdb.set_trace()
     inputs = tokenizer(input_text, return_tensors="pt")
