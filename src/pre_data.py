@@ -829,7 +829,7 @@ def pad_seq(seq, seq_len, max_length):
     seq += [PAD_token for _ in range(max_length - seq_len)]
     return seq
 
-def prepare_data_for_bert(train_pairs, test_pairs):
+def prepare_data_for_bert(pairs_trained, pairs_tested):
     pdb.set_trace()
 
 # prepare the batches
