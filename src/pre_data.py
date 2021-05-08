@@ -831,10 +831,21 @@ def pad_seq(seq, seq_len, max_length):
 
 def prepare_data_for_bert(pairs_trained, pairs_tested):
     
-    temp_pairs_trained = []
+    new_pairs_trained = []
     for pair_tr in pairs_trained:
         qt, et, num, num_pos = pair_tr
-        print(''.join(qt))
+        new_qt = ''.join(qt)
+        # print(''.join(qt))
+        new_num_pos = []
+        for n_pos in num_pos:
+            count_pos = 0
+            for i in range(n_pos):
+                if qt[i] == 'NUM':
+                    count_pos += 1
+                else:
+                    count_pos += len(qt[i])
+            new_num_pos.append(count_pos)
+        new_pairs_trained.append((new_qt,et,num,new_num_pos))
         pdb.set_trace()
 
 # prepare the batches
