@@ -156,9 +156,9 @@ for fold in range(5):
         # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
         # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
-        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(train_pairs, batch_size)
-        input_batches_, input_lengths_, output_batches_, output_lengths_, nums_batches_, num_pos_batches_, num_size_batches_ =prepare_train_batch_text(pairs_trained,batch_size)
-        pdb.set_trace()
+        # input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(train_pairs, batch_size)
+        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_pos_batches, num_size_batches =prepare_train_batch_text(pairs_trained,batch_size)
+        # pdb.set_trace()
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
 
