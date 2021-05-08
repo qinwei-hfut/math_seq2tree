@@ -1028,10 +1028,11 @@ def number_n_gram_word(pairs, n_gram=3):
     return 
         
 
-def train_probing_type_bert(input_batch, input_length,output_batch, output_length, encoder, probing_type_module, probing_type_optim,
+def train_probing_type_bert(input_batch, input_length,output_batch, output_length, probing_type_module, probing_type_optim,
                nums_batch, num_pos,output_lang):
 
     # print(nums_batch)
+    encoder = None
     pdb.set_trace()
     input_var = torch.LongTensor(input_batch).transpose(0, 1)
     encoder.eval()
