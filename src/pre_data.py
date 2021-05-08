@@ -830,7 +830,12 @@ def pad_seq(seq, seq_len, max_length):
     return seq
 
 def prepare_data_for_bert(pairs_trained, pairs_tested):
-    pdb.set_trace()
+    
+    temp_pairs_trained = []
+    for pair_tr in pairs_trained:
+        qt, et, num, num_pos = pair_tr
+        print(''.join(qt))
+        pdb.set_trace()
 
 # prepare the batches
 def prepare_train_batch_text(pairs_to_batch, batch_size):
