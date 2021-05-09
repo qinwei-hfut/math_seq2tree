@@ -863,10 +863,12 @@ def prepare_data_for_bert(pairs_trained, pairs_tested):
                     count_pos += len(qt[i])
             new_num_pos.append(count_pos)
         new_pairs_tested.append((new_qt,et,num,new_num_pos))
-        pdb.set_trace()
+        # pdb.set_trace()
+    
+    return new_pairs_trained, new_pairs_tested
 
 # prepare the batches
-def prepare_train_batch_text(pairs_to_batch, batch_size):
+def prepare_train_batch_for_bert(pairs_to_batch, batch_size):
     pairs = copy.deepcopy(pairs_to_batch)
     random.shuffle(pairs)  # shuffle the pairs
     pos = 0
