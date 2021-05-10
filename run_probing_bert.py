@@ -71,11 +71,11 @@ for fold in range(5):
     merge = Merge(hidden_size=hidden_size, embedding_size=embedding_size)
 
     # ----- -----TODO hidden size
-    probing_compare_module = Probing_Compare_Module(embedding_size=hidden_size,hidden_size= 200,linear=False,cat=True)
-    probing_distance_module = Probing_Distance_Module(embedding_size=hidden_size,hidden_size=256)
-    probing_opter_module = Probing_Opter_Module(embedding_size=hidden_size,hidden_size= 200,linear=False,cat=True)
-    probing_regression_module = Probing_Regression_Module(embedding_size=hidden_size,hidden_dim=200,linear=False)
-    probing_type_module = Probing_Type_Module(embedding_size=hidden_size,hidden_dim=200,linear=True)
+    probing_compare_module = Probing_Compare_Module(embedding_size=768,hidden_size= 200,linear=False,cat=True)
+    probing_distance_module = Probing_Distance_Module(embedding_size=768,hidden_size=256)
+    probing_opter_module = Probing_Opter_Module(embedding_size=768,hidden_size= 200,linear=False,cat=True)
+    probing_regression_module = Probing_Regression_Module(embedding_size=768,hidden_dim=200,linear=False)
+    probing_type_module = Probing_Type_Module(embedding_size=768,hidden_dim=200,linear=True)
     # the embedding layer is  only for generated number embeddings, operators, and paddings
 
     # encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
@@ -308,10 +308,11 @@ for fold in range(5):
         correct_total_list_opter = [[],[],[],[]]
         loss_total_random = []
         loss_total = []
-        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
+        # input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
+        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_pos_batches, num_size_batches =prepare_train_batch_for_bert(pairs_tested,batch_size)
         for idx in range(len(input_lengths)):
 
-            loss_probing_type, correct_list_batch,correct_list_opter = test_probing_type(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], encoder, probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_probing_type, correct_list_batch,correct_list_opter = test_probing_type_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total.append(loss_probing_type)
             correct_total_total_test += correct_list_batch
             for i in range(len(correct_list_opter)):
