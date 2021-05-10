@@ -23,6 +23,7 @@ import pdb
 pretrained = 'bert-base-chinese'
 tokenizer = BertTokenizer.from_pretrained(pretrained)
 bert_model = BertModel.from_pretrained(pretrained)
+tokenizer.cuda()
 bert_model.cuda()
 
 
@@ -1068,7 +1069,7 @@ def train_probing_type_bert(input_batch, input_length,output_batch, output_lengt
         outputs = bert_model(**inputs)
         pooler_output  = outputs.pooler_output
         last_hidden_state   = outputs.last_hidden_state
-        # pdb.set_trace()
+        pdb.set_trace()
         
         for idx_np in range(len(num_pos[idx])):
             num_p = num_pos[idx][idx_np]+1
@@ -1088,7 +1089,7 @@ def train_probing_type_bert(input_batch, input_length,output_batch, output_lengt
             # input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_type_module(input_x)
-            # pdb.set_trace()
+            pdb.set_trace()
             loss_np = criterion(pred,target)
             correct_list_batch.append((torch.max(pred,1)[1]==target).item())
             loss_batch.append(loss_np)
