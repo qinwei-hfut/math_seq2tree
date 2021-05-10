@@ -23,8 +23,8 @@ import pdb
 pretrained = 'bert-base-chinese'
 tokenizer = BertTokenizer.from_pretrained(pretrained)
 bert_model = BertModel.from_pretrained(pretrained)
-tokenizer.cuda()
-bert_model.cuda()
+# tokenizer.cuda()
+# bert_model.cuda()
 
 
 class Beam:  # the class save the beam node
