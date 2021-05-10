@@ -17,6 +17,13 @@ MAX_OUTPUT_LENGTH = 45
 MAX_INPUT_LENGTH = 120
 USE_CUDA = torch.cuda.is_available()
 
+from transformers import BertTokenizer, BertModel
+import pdb
+
+pretrained = 'bert-base-chinese'
+tokenizer = BertTokenizer.from_pretrained(pretrained)
+bert_model = BertModel.from_pretrained(pretrained)
+
 
 class Beam:  # the class save the beam node
     def __init__(self, score, input_var, hidden, all_output):
@@ -1032,16 +1039,16 @@ def train_probing_type_bert(input_batch, input_length,output_batch, output_lengt
                nums_batch, num_pos,output_lang):
 
     # print(nums_batch)
-    encoder = None
+    # encoder = None
     pdb.set_trace()
-    input_var = torch.LongTensor(input_batch).transpose(0, 1)
-    encoder.eval()
+    # input_var = torch.LongTensor(input_batch).transpose(0, 1)
+    # encoder.eval()
     probing_type_module.train()
-    if USE_CUDA:
-        input_var = input_var.cuda()
-    encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
+    # if USE_CUDA:
+    #     input_var = input_var.cuda()
+    # encoder_outputs, _ = encoder(input_var, input_length) # encoder_outputa S x B x H
     # pdb.set_trace()
-    encoder_outputs =  encoder_outputs.detach()
+    # encoder_outputs =  encoder_outputs.detach()
 
 
     # 进行数字的类别分类；float；int;分数；百分数；
@@ -1054,7 +1061,14 @@ def train_probing_type_bert(input_batch, input_length,output_batch, output_lengt
     criterion = torch.nn.CrossEntropyLoss()
     for idx in range(len(input_batch)):
 
-  
+        inputs = tokenizer(input_batch[idx], return_tensors="pt")
+        input_ids = tokenizer.encode(input_batch[idx])
+        tokens = tokenizer.decode(input_ids)
+        outputs = bert_model(**inputs)
+        pooler_output  = outputs.pooler_output
+        last_hidden_state   = outputs.last_hidden_state
+        pdb.set_trace()
+        '''
         for idx_np in range(len(num_pos[idx])):
             num_p = num_pos[idx][idx_np]
             # print(nums_batch[idx])
@@ -1076,6 +1090,7 @@ def train_probing_type_bert(input_batch, input_length,output_batch, output_lengt
             loss_np = criterion(pred,target)
             correct_list_batch.append((torch.max(pred,1)[1]==target).item())
             loss_batch.append(loss_np)
+        '''
 
         
     loss = sum(loss_batch) / len(loss_batch)
