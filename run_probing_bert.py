@@ -42,6 +42,8 @@ fold_pairs.append(pairs[(fold_size * 4):])
 
 best_acc_fold = []
 
+torch.cuda.set_device(0)
+
 for fold in range(5):
     if fold < 4:
         continue
