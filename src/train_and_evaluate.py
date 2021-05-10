@@ -1088,7 +1088,9 @@ def train_probing_type_bert(input_batch, input_length,output_batch, output_lengt
             try:
                 input_x = last_hidden_state[:,num_p,:]
             except:
-                pdb.set_trace()
+                continue
+                # TODO
+                # pdb.set_trace()
             # input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
 
             pred = probing_type_module(input_x)
