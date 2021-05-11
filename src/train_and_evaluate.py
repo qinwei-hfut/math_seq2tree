@@ -978,6 +978,22 @@ def compute_tree_distance(idx_equation, lang):
     # print(stack.base[0].dist)
     # pdb.set_trace()
 
+def compute_tree_distance_bert(idx_equation, lang):
+    equation = idx_equation
+    # equation = ['/', '-', 'N3', 'N1', '*', '/', 'N1', 'N0', '/', 'N2', '+', 'N2', 'N3']
+    stack = Stack(lang)
+    # print(equation)
+    # pdb.set_trace()
+    Num_list = []
+    for c in equation:
+        if c in lang.index2word[7:-1] and c not in Num_list:
+            Num_list.append(c)
+        stack.push(c)
+    # print(equation)
+    return (stack,equation, Num_list)
+    # print(stack.base[0].dist)
+    # pdb.set_trace()
+
 def number_n_gram_word(pairs, n_gram=3):
     word_number_list = {}   # key 应该是词语，value是一个list，包含了经历过的num
     for p1, p2, p3, p4 in pairs:
@@ -1744,6 +1760,78 @@ def test_probing_opter(input_batch, input_length,output_batch, output_length, en
     return loss.item(),correct_list_batch
 
 # '''
+def train_probing_distance_bert(input_batch, input_length,output_batch, output_length, probing_distance_module, probing_distance_optim,
+               nums_batch, num_pos,output_lang):
+
+
+    probing_distance_module.train()
+
+    loss_batch = []
+    for idx in range(len(input_batch)):
+        
+        # print(output_batch[idx])
+        # print(output_length[idx])
+        if output_length[idx] < 2:
+            continue
+        stack, equation,Num_list = compute_tree_distance_bert(output_batch[idx],output_lang)
+        # pdb.set_trace()
+        if len(Num_list) < 2:
+            continue
+        if 'UNK' in equation:
+            continue
+        try:
+            dist_dict = stack.base[0].dist
+        except:
+            continue
+
+        inputs = tokenizer(input_batch[idx], return_tensors="pt")
+        inputs['input_ids'] = inputs['input_ids'].cuda()
+        inputs['token_type_ids'] = inputs['token_type_ids'].cuda()
+        inputs['attention_mask'] = inputs['attention_mask'].cuda()
+        # input_ids = tokenizer.encode(input_batch[idx])
+        # tokens = tokenizer.decode(input_ids)
+        outputs = bert_model(**inputs)
+        # pooler_output  = outputs.pooler_output
+        # TODO detach?
+        last_hidden_state   = outputs.last_hidden_state.detach()
+       
+        # print(equation)
+        # print(dist_dict)
+
+        loss_pbl = []
+        for i in range(len(Num_list)):
+            for j in range(i+1, len(Num_list)):
+                num_i_pos = num_pos[idx][int(Num_list[i].replace('N',''))]+1
+                num_j_pos = num_pos[idx][int(Num_list[j].replace('N',''))]+1
+
+                try:
+                    feature_i = last_hidden_state[:,num_i_pos,:]
+                    feature_j = last_hidden_state[:,num_j_pos,:]
+                except:
+                    continue
+                edges = []
+                for k,v in dist_dict.items():
+                    if k == Num_list[i] or k.find(Num_list[i]+'__')!= -1:
+                        for kk, vv in v.items():
+                            if kk == Num_list[j] or kk.find(Num_list[j]+'__') != -1:
+                                edges.append(vv)
+                distance_tree = sum(edges) / len(edges)
+                # print(str(Num_list[i])+'   '+str(Num_list[j])+': '+str(distance_tree))
+
+                dist_feautre = probing_distance_module(feature_i,feature_j)
+                loss_pbl.append(torch.abs(dist_feautre - distance_tree))
+
+        # pdb.set_trace()
+        if len(loss_pbl) == 0:
+            pdb.set_trace()
+        loss_batch.append(sum(loss_pbl) / len(loss_pbl))
+    loss = sum(loss_batch) / len(loss_batch)
+    probing_distance_optim.zero_grad()
+    loss.backward()
+    probing_distance_optim.step()
+    return loss.item()
+
+
 def train_probing_distance(input_batch, input_length,output_batch, output_length, encoder, probing_distance_module, probing_distance_optim,
                nums_batch, num_pos,output_lang):
 

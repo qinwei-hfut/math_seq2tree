@@ -215,15 +215,17 @@ for fold in range(5):
             correct_total += correct_sum
             '''
 
-            '''
-            loss_dist = train_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
-            loss_total += loss_dist
-            '''
-
             
+            loss_dist = train_probing_distance_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_total += loss_dist
+            
+
+            '''
+            # opter
             loss_probing_compare, correct_list_batch = train_probing_opter_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_probing_compare
             correct_list_total += correct_list_batch
+            '''
             
 
 
@@ -241,7 +243,7 @@ for fold in range(5):
 
         # pdb.set_trace()
         print("training loss:", loss_total / len(input_lengths))
-        print("training acc:", sum(correct_list_total) / float(len(correct_list_total)))
+        # print("training acc:", sum(correct_list_total) / float(len(correct_list_total)))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
         
@@ -267,7 +269,7 @@ for fold in range(5):
         '''
 
         
-        
+        '''
         ##### evaluate probing_opter()
         print('evaluate probing opter task:')
         start = time.time()
@@ -284,6 +286,7 @@ for fold in range(5):
         print("test acc:", sum(correct_total_total_test).item() / float(len(correct_total_total_test)))
         print("test time", time_since(time.time() - start))
         print("--------------------------------")
+        '''
         
 
 
