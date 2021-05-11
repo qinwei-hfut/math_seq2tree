@@ -1835,6 +1835,158 @@ def train_probing_distance_bert(input_batch, input_length,output_batch, output_l
     probing_distance_optim.step()
     return loss.item()
 
+def test_probing_distance_bert(input_batch, input_length,output_batch, output_length, probing_distance_module, probing_distance_optim,
+               nums_batch, num_pos,output_lang):
+
+
+    probing_distance_module.eval()
+
+    loss_batch = []
+    for idx in range(len(input_batch)):
+        
+        # print(output_batch[idx])
+        # print(output_length[idx])
+        if output_length[idx] < 2:
+            continue
+        stack, equation,Num_list = compute_tree_distance_bert(output_batch[idx],output_lang)
+        # pdb.set_trace()
+        if len(Num_list) < 2:
+            continue
+        if 'UNK' in equation:
+            continue
+        try:
+            dist_dict = stack.base[0].dist
+        except:
+            continue
+
+        inputs = tokenizer(input_batch[idx], return_tensors="pt")
+        inputs['input_ids'] = inputs['input_ids'].cuda()
+        inputs['token_type_ids'] = inputs['token_type_ids'].cuda()
+        inputs['attention_mask'] = inputs['attention_mask'].cuda()
+        # input_ids = tokenizer.encode(input_batch[idx])
+        # tokens = tokenizer.decode(input_ids)
+        outputs = bert_model(**inputs)
+        # pooler_output  = outputs.pooler_output
+        # TODO detach?
+        last_hidden_state   = outputs.last_hidden_state.detach()
+       
+        # print(equation)
+        # print(dist_dict)
+
+        loss_pbl = []
+        for i in range(len(Num_list)):
+            for j in range(i+1, len(Num_list)):
+                num_i_pos = num_pos[idx][int(Num_list[i].replace('N',''))]+1
+                num_j_pos = num_pos[idx][int(Num_list[j].replace('N',''))]+1
+
+                try:
+                    feature_i = last_hidden_state[:,num_i_pos,:]
+                    feature_j = last_hidden_state[:,num_j_pos,:]
+                except:
+                    continue
+                edges = []
+                for k,v in dist_dict.items():
+                    if k == Num_list[i] or k.find(Num_list[i]+'__')!= -1:
+                        for kk, vv in v.items():
+                            if kk == Num_list[j] or kk.find(Num_list[j]+'__') != -1:
+                                edges.append(vv)
+                distance_tree = sum(edges) / len(edges)
+                # print(str(Num_list[i])+'   '+str(Num_list[j])+': '+str(distance_tree))
+
+                dist_feautre = probing_distance_module(feature_i,feature_j)
+                loss_pbl.append(torch.abs(dist_feautre - distance_tree))
+
+        # pdb.set_trace()
+        if len(loss_pbl) == 0:
+            continue
+        loss_batch.append(sum(loss_pbl) / len(loss_pbl))
+        # loss_batch += loss_pbl
+    loss = sum(loss_batch) / len(loss_batch)
+    # probing_distance_optim.zero_grad()
+    # try:
+    #     loss.backward()
+    # except:
+    #     pdb.set_trace()
+    # probing_distance_optim.step()
+    return loss.item()
+
+def test_probing_distance_bert_random(input_batch, input_length,output_batch, output_length, probing_distance_module, probing_distance_optim,
+               nums_batch, num_pos,output_lang):
+
+
+    probing_distance_module.eval()
+
+    loss_batch = []
+    for idx in range(len(input_batch)):
+        
+        # print(output_batch[idx])
+        # print(output_length[idx])
+        if output_length[idx] < 2:
+            continue
+        stack, equation,Num_list = compute_tree_distance_bert(output_batch[idx],output_lang)
+        # pdb.set_trace()
+        if len(Num_list) < 2:
+            continue
+        if 'UNK' in equation:
+            continue
+        try:
+            dist_dict = stack.base[0].dist
+        except:
+            continue
+
+        inputs = tokenizer(input_batch[idx], return_tensors="pt")
+        inputs['input_ids'] = inputs['input_ids'].cuda()
+        inputs['token_type_ids'] = inputs['token_type_ids'].cuda()
+        inputs['attention_mask'] = inputs['attention_mask'].cuda()
+        # input_ids = tokenizer.encode(input_batch[idx])
+        # tokens = tokenizer.decode(input_ids)
+        outputs = bert_model(**inputs)
+        # pooler_output  = outputs.pooler_output
+        # TODO detach?
+        last_hidden_state   = outputs.last_hidden_state.detach()
+       
+        # print(equation)
+        # print(dist_dict)
+
+        loss_pbl = []
+        random_list = [i for i in range(len(num_pos[idx]))]
+        for i in range(len(Num_list)):
+            for j in range(i+1, len(Num_list)):
+                # num_i_pos = num_pos[idx][int(Num_list[i].replace('N',''))]+1
+                # num_j_pos = num_pos[idx][int(Num_list[j].replace('N',''))]+1
+
+                num_ij_pos = random.sample(random_list,2)
+
+                try:
+                    feature_i = last_hidden_state[:,num_ij_pos[0],:]
+                    feature_j = last_hidden_state[:,num_ij_pos[1],:]
+                except:
+                    continue
+                edges = []
+                for k,v in dist_dict.items():
+                    if k == Num_list[i] or k.find(Num_list[i]+'__')!= -1:
+                        for kk, vv in v.items():
+                            if kk == Num_list[j] or kk.find(Num_list[j]+'__') != -1:
+                                edges.append(vv)
+                distance_tree = sum(edges) / len(edges)
+                # print(str(Num_list[i])+'   '+str(Num_list[j])+': '+str(distance_tree))
+
+                dist_feautre = probing_distance_module(feature_i,feature_j)
+                loss_pbl.append(torch.abs(dist_feautre - distance_tree))
+
+        # pdb.set_trace()
+        if len(loss_pbl) == 0:
+            continue
+        loss_batch.append(sum(loss_pbl) / len(loss_pbl))
+        # loss_batch += loss_pbl
+    loss = sum(loss_batch) / len(loss_batch)
+    # probing_distance_optim.zero_grad()
+    # try:
+    #     loss.backward()
+    # except:
+    #     pdb.set_trace()
+    # probing_distance_optim.step()
+    return loss.item()
 
 def train_probing_distance(input_batch, input_length,output_batch, output_length, encoder, probing_distance_module, probing_distance_optim,
                nums_batch, num_pos,output_lang):

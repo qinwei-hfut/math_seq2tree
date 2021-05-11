@@ -166,7 +166,7 @@ for fold in range(5):
         print("fold:", fold + 1)
         print("epoch:", epoch + 1)
 
-        '''
+        
         # ######### evaluate probing distance task
         print('evaluate probing distance task:')
         loss_total_test = 0
@@ -175,15 +175,14 @@ for fold in range(5):
         # 第二个dim就是在batch中选择样本；第三个dim就是每个样本的vector
         # input_lengths； 在上面的每个batch的数据中，每个样本的vector长度都保持了一致，通过补0和该batch的最长的vector的长度一致；
         # 因此，input_lengths就是标记了每个样本的实际长度；二维的；
-        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
         # pdb.set_trace()
         start = time.time()
         
         for idx in range(len(input_lengths)):
-            loss_dist = test_probing_distance(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_dist = test_probing_distance_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total_test += loss_dist
 
-            loss_dist_random = test_probing_distance_random(input_batches[idx], input_lengths[idx], output_batches[idx], output_lengths[idx], encoder, probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_dist_random = test_probing_distance_bert_random(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total_test_random += loss_dist_random
             # print('test loss batch '+str(idx)+': '+str(loss_dist))
         print("test loss:", loss_total_test / len(input_lengths))
@@ -192,7 +191,7 @@ for fold in range(5):
         print("--------------------------------")
         ##
         #################
-        '''
+        
 
 
         ###########################
