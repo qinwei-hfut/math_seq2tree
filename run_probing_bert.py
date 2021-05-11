@@ -206,6 +206,7 @@ for fold in range(5):
         for idx in range(len(input_lengths)):
             if idx % 50 == 0:
                 print('train '+str(idx))
+                break
 
             '''
             loss_probing_compare, correct_sum = train_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
@@ -237,7 +238,7 @@ for fold in range(5):
             '''
         
 
-        # pdb.set_trace()
+        pdb.set_trace()
         print("training loss:", loss_total / len(input_lengths))
         print("training acc:", sum(correct_list_total) / len(correct_list_total))
         print("training time", time_since(time.time() - start))
