@@ -1143,6 +1143,9 @@ def test_probing_type_bert(input_batch, input_length,output_batch, output_length
     for idx in range(len(input_batch)):
 
         inputs = tokenizer(input_batch[idx], return_tensors="pt")
+        inputs['input_ids'] = inputs['input_ids'].cuda()
+        inputs['token_type_ids'] = inputs['token_type_ids'].cuda()
+        inputs['attention_mask'] = inputs['attention_mask'].cuda()
         input_ids = tokenizer.encode(input_batch[idx])
         tokens = tokenizer.decode(input_ids)
         outputs = bert_model(**inputs)
