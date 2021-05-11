@@ -206,6 +206,7 @@ for fold in range(5):
         for idx in range(len(input_lengths)):
             if idx % 50 == 0:
                 print('train '+str(idx))
+            if idx == 20:
                 break
 
             '''
