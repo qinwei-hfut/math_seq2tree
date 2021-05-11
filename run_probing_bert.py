@@ -239,9 +239,9 @@ for fold in range(5):
             '''
         
 
-        pdb.set_trace()
+        # pdb.set_trace()
         print("training loss:", loss_total / len(input_lengths))
-        print("training acc:", sum(correct_list_total) / len(correct_list_total))
+        print("training acc:", sum(correct_list_total) / float(len(correct_list_total)))
         print("training time", time_since(time.time() - start))
         print("--------------------------------")
         
@@ -280,7 +280,7 @@ for fold in range(5):
         # if  float(correct_total_test)/len(test_pairs) > best_test_acc:
         #     best_test_acc =  float(correct_total_test)/len(test_pairs)
         print("test loss:", loss_total / len(input_lengths))
-        print("test acc:", sum(correct_total_total_test).item() / len(correct_total_total_test))
+        print("test acc:", sum(correct_total_total_test).item() / float(len(correct_total_total_test)))
         print("test time", time_since(time.time() - start))
         print("--------------------------------")
         
