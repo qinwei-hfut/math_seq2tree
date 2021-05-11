@@ -86,7 +86,7 @@ for fold in range(5):
     # merge_optimizer = torch.optim.Adam(merge.parameters(), lr=learning_rate, weight_decay=weight_decay)
     probing_compare_optim = torch.optim.SGD(probing_compare_module.parameters(), lr=0.01, momentum=0.5)
     probing_distance_optim = torch.optim.SGD(probing_distance_module.parameters(), lr=0.001, momentum=0.5)
-    probing_opter_optim = torch.optim.SGD(probing_opter_module.parameters(), lr=0.001, momentum=0.5)
+    probing_opter_optim = torch.optim.SGD(probing_opter_module.parameters(), lr=0.01, momentum=0.5)
     probing_regression_optim = torch.optim.SGD(probing_regression_module.parameters(), lr=0.01, momentum=0.5)
     probing_type_optim = torch.optim.SGD(probing_type_module.parameters(), lr=0.01, momentum=0.5)
 
