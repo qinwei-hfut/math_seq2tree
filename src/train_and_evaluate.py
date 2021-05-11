@@ -1489,8 +1489,8 @@ def train_probing_opter_bert(input_batch, input_length,output_batch, output_leng
         outputs = bert_model(**inputs)
         pooler_output  = outputs.pooler_output
         # TODO detach?
-        last_hidden_state   = outputs.last_hidden_state
-        pdb.set_trace()
+        last_hidden_state   = outputs.last_hidden_state.detach()
+        # pdb.set_trace()
         # try:
         #     dist_dict = stack.base[0].dist
         # except:

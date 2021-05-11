@@ -219,7 +219,7 @@ for fold in range(5):
             '''
 
             
-            loss_probing_compare, correct_list_batch = train_probing_opter_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_probing_compare, correct_list_batch = train_probing_opter_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_probing_compare
             correct_list_total += correct_list_batch
             
