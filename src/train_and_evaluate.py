@@ -1457,6 +1457,79 @@ def test_probing_regression_random(input_batch, input_length,output_batch, outpu
 
     return loss.item()
 
+
+def train_probing_opter_bert(input_batch, input_length,output_batch, output_length, probing_opter_module, probing_opter_optim,
+               nums_batch, num_pos,output_lang):
+
+    probing_opter_module.train()
+
+    loss_batch = []
+    correct_list_batch = []
+    for idx in range(len(input_batch)):
+        
+        # print(output_batch[idx])
+        # print(output_length[idx])
+        # 如果公式长度小于2，则过滤此样本；
+        equation = output_batch[idx]
+        if len(equation) < 2:
+            continue
+        
+        # stack, equation,Num_list = compute_tree_distance(output_batch[idx][0:output_length[idx]],output_lang)
+        # # pdb.set_trace()
+        # if len(Num_list) < 2:
+        #     continue
+        if 'UNK' in equation:
+            continue
+        inputs = tokenizer(input_batch[idx], return_tensors="pt")
+        inputs['input_ids'] = inputs['input_ids'].cuda()
+        inputs['token_type_ids'] = inputs['token_type_ids'].cuda()
+        inputs['attention_mask'] = inputs['attention_mask'].cuda()
+        # input_ids = tokenizer.encode(input_batch[idx])
+        # tokens = tokenizer.decode(input_ids)
+        outputs = bert_model(**inputs)
+        pooler_output  = outputs.pooler_output
+        # TODO detach?
+        last_hidden_state   = outputs.last_hidden_state
+        pdb.set_trace()
+        # try:
+        #     dist_dict = stack.base[0].dist
+        # except:
+        #     continue
+
+        criterion = torch.nn.CrossEntropyLoss()
+
+        loss_plm = []
+        for idx_e in range(len(equation)-2):
+            c = equation[idx_e]
+            if c in output_lang.index2word[0:4]:
+                if equation[idx_e+1] in output_lang.index2word[7:22]:
+                    if equation[idx_e+2] in output_lang.index2word[7:22]:
+                        num_i_pos = num_pos[idx][int(equation[idx_e+1].replace('N',''))]+1
+                        num_j_pos = num_pos[idx][int(equation[idx_e+2].replace('N',''))]+1
+
+                        feature_i = last_hidden_state[:,num_i_pos,:]
+                        feature_j = last_hidden_state[:,num_j_pos,:]
+                        # pdb.set_trace()
+                        logits = probing_opter_module(feature_i,feature_j)
+                        # pdb.set_trace()
+                        _,predict=torch.max(logits,dim=1)
+                        # pdb.set_trace()
+                        correct_list_batch.append(predict==output_lang.word2index[c])
+                        loss_plm.append(criterion(logits,torch.tensor(output_lang.word2index[c]).view(1).cuda()))
+        # loss_batch.append(sum(loss_plm) / len(loss_plm))
+        # pdb.set_trace()
+        if len(loss_plm) == 0:
+            continue
+        loss_batch.append(sum(loss_plm) / len(loss_plm))
+    loss = sum(loss_batch) / len(loss_batch)
+
+    probing_opter_optim.zero_grad()
+    loss.backward()
+    probing_opter_optim.step()
+    return loss.item(),correct_list_batch
+
+
+
 def train_probing_opter(input_batch, input_length,output_batch, output_length, encoder, probing_opter_module, probing_opter_optim,
                nums_batch, num_pos,output_lang):
 
