@@ -201,10 +201,11 @@ for fold in range(5):
         loss_total = 0
         correct_list_total = []
         correct_total = 0
-        print(len(input_lengths))
-        print(len(input_batches))
+        # print(len(input_lengths))
+        # print(len(input_batches))
         for idx in range(len(input_lengths)):
-            print('train'+str(idx))
+            if idx % 50 == 0:
+                print('train '+str(idx))
 
             '''
             loss_probing_compare, correct_sum = train_probing_compare(input_batches[idx], input_lengths[idx], encoder, probing_compare_module, probing_compare_optim, nums_batches[idx], num_pos_batches[idx])
@@ -315,9 +316,10 @@ for fold in range(5):
         loss_total = []
         # input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
         input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_pos_batches, num_size_batches =prepare_train_batch_for_bert(pairs_tested,batch_size)
-        print(len(input_lengths))
+        # print(len(input_lengths))
         for idx in range(len(input_lengths)):
-            print('test'+str(idx))
+            if idx == 50:
+                print('test '+str(idx))
 
             loss_probing_type, correct_list_batch,correct_list_opter = test_probing_type_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_type_module, probing_type_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total.append(loss_probing_type)
