@@ -1167,7 +1167,11 @@ def test_probing_type_bert(input_batch, input_length,output_batch, output_length
                 target = torch.tensor(3, device='cuda').unsqueeze(dim=0)
             # if target.item() > 10. or target.item() < -10:
             #     continue
-            input_x = last_hidden_state[:,num_p,:]
+            try:
+                input_x = last_hidden_state[:,num_p,:]
+            except:
+                continue
+                #TODO
             # input_x = encoder_outputs[num_p][idx].unsqueeze(dim=0)
             # pdb.set_trace()
 
