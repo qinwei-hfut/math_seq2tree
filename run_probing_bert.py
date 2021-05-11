@@ -216,7 +216,7 @@ for fold in range(5):
             '''
 
             
-            loss_dist = train_probing_distance_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
+            loss_dist = train_probing_distance_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_distance_module, probing_distance_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_dist
             
 
