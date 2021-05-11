@@ -1825,7 +1825,7 @@ def train_probing_distance_bert(input_batch, input_length,output_batch, output_l
         # if len(loss_pbl) == 0:
         #     pdb.set_trace()
         # loss_batch.append(sum(loss_pbl) / len(loss_pbl))
-        loss_batch += loss_pdl
+        loss_batch += loss_pbl
     loss = sum(loss_batch) / len(loss_batch)
     probing_distance_optim.zero_grad()
     loss.backward()
