@@ -246,6 +246,8 @@ for fold in range(5):
         print("--------------------------------")
         
         
+
+        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_pos_batches, num_size_batches =prepare_train_batch_for_bert(pairs_tested,batch_size)
         '''
         ##### evaluate probing_compare()
         correct_total_test = 0
@@ -270,7 +272,6 @@ for fold in range(5):
         print('evaluate probing opter task:')
         start = time.time()
         correct_total_total_test = []
-        input_batches, input_lengths, output_batches, output_lengths, nums_batches, num_stack_batches, num_pos_batches, num_size_batches = prepare_train_batch(test_pairs, batch_size)
         for idx in range(len(input_lengths)):
             loss_probing_compare, correct_list_batch = test_probing_opter_bert(input_batches[idx], input_lengths[idx], output_batches[idx],output_lengths[idx], probing_opter_module, probing_opter_optim, nums_batches[idx], num_pos_batches[idx],output_lang)
             loss_total += loss_probing_compare
